@@ -46,11 +46,31 @@ pointLight.position.set(5, 5, 5);
 scene.add(pointLight);
 
 
-// ---- NUEVO: Añadir Controles de Órbita ----
+// ---- Añadir Controles de Órbita ----
 // Esto nos permitirá rotar la escena con el ratón para confirmar que el fondo 360 funciona
 const controls = new OrbitControls(camera, renderer.domElement);
 
+function moveCamera() {
+    // getBoundingClientRect() nos da la posición de un elemento relativo a la ventana.
+    // .top nos dice cuántos píxeles hemos scrolleado desde el inicio del body.
+    const t = document.body.getBoundingClientRect().top;
 
+    // Rotamos un poco el cubo para darle más vida al movimiento
+    cube.rotation.y += 0.005;
+    cube.rotation.z += 0.005;
+
+    // la posición z de la cámara se mapea directamente
+    // al valor del scroll (t). Como t es negativo, lo multiplicamos por -0.01
+    // para obtener un valor positivo y pequeño.
+    // El '5' inicial es nuestra posición de zoom base.
+    camera.position.z = t * -0.01 + 5;
+    camera.position.x = t * -0.0002;
+    camera.position.y = t * -0.0002;
+}
+
+// Le decimos al body que ejecute la función moveCamera cada vez que ocurra un evento de scroll
+document.body.onscroll = moveCamera;
+moveCamera(); // La llamamos una vez al inicio para establecer la posición inicial
 // ---- Bucle de Animación ----
 function animate() {
     requestAnimationFrame(animate);
