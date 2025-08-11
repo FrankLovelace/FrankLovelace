@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    overflow-x: hidden; /* Previene el scroll horizontal */
+}
+
+/* El lienzo 3D se queda fijo detrás de todo */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Lo pone en la capa del fondo */
+    outline: none;
+}
+
+/* Escondemos el H1 por ahora para solo ver la escena 3D */
+h1 {
+    display: none;
+}
