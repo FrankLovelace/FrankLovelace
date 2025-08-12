@@ -1,6 +1,7 @@
 body {
     margin: 0;
     overflow-x: hidden; /* Previene el scroll horizontal */
+    position: relative;
 }
 
 /* El lienzo 3D se queda fijo detrás de todo */
@@ -10,6 +11,7 @@ body {
     left: 0;
     z-index: -1; /* Lo pone en la capa del fondo */
     outline: none;
+      display: block; 
 }
 
 /* Escondemos el H1 por ahora para solo ver la escena 3D */
@@ -28,4 +30,8 @@ h1 {
     padding-top: 40vh;
     font-size: 2rem;
     font-family: sans-serif;
+}
+html, body {
+    overflow-x: hidden;
+    position: relative;
 }
