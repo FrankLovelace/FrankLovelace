@@ -50,27 +50,48 @@ scene.add(pointLight);
 // Esto nos permitirá rotar la escena con el ratón para confirmar que el fondo 360 funciona
 const controls = new OrbitControls(camera, renderer.domElement);
 
-function moveCamera() {
-    // getBoundingClientRect() nos da la posición de un elemento relativo a la ventana.
-    // .top nos dice cuántos píxeles hemos scrolleado desde el inicio del body.
-    const t = document.body.getBoundingClientRect().top;
+const animationScript = [
+    {
+        scrollStart: 0,    // Comienza al 0% del scroll
+        scrollEnd: 15,     // Termina al 15%
+        cameraStart: { z: 5 },
+        cameraEnd: { z: 15 } // Acto I: Nos alejamos un poco para ver la escena
+    },
+    {
+        scrollStart: 15,   // Comienza al 15%
+        scrollEnd: 35,     // Termina al 35%
+        cameraStart: { z: 15 },
+        cameraEnd: { z: -2 } // Acto II: Viaje rápido hacia el portal
+    },
+    // ... aquí añadiremos más escenas como la de la Tierra, etc.
+];
 
-    // Rotamos un poco el cubo para darle más vida al movimiento
+function moveCamera() {
+    const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (window.scrollY / scrollTotal) * 100;
+
+    // Encontrar la escena actual en nuestro guion
+    let currentScene = animationScript.find(
+        scene => scrollPercent >= scene.scrollStart && scrollPercent <= scene.scrollEnd
+    );
+
+    if (currentScene) {
+        // Calcular qué tan avanzados estamos DENTRO de la escena actual (de 0.0 a 1.0)
+        const sceneScrollDuration = currentScene.scrollEnd - currentScene.scrollStart;
+        const scrollWithinScene = scrollPercent - currentScene.scrollStart;
+        const sceneProgress = scrollWithinScene / sceneScrollDuration;
+
+        // Usamos la función lerp para calcular la nueva posición de la cámara
+        camera.position.z = lerp(currentScene.cameraStart.z, currentScene.cameraEnd.z, sceneProgress);
+    }
+
+    // La rotación del cubo puede seguir siendo constante
     cube.rotation.y += 0.005;
     cube.rotation.z += 0.005;
-
-    // la posición z de la cámara se mapea directamente
-    // al valor del scroll (t). Como t es negativo, lo multiplicamos por -0.01
-    // para obtener un valor positivo y pequeño.
-    // El '5' inicial es nuestra posición de zoom base.
-    camera.position.z = t * -0.01 + 5;
-    camera.position.x = t * -0.0002;
-    camera.position.y = t * -0.0002;
 }
 
-// Le decimos al body que ejecute la función moveCamera cada vez que ocurra un evento de scroll
 document.body.onscroll = moveCamera;
-moveCamera(); // La llamamos una vez al inicio para establecer la posición inicial
+moveCamera();
 // ---- Bucle de Animación ----
 function animate() {
     requestAnimationFrame(animate);
@@ -92,3 +113,6 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+document.body.onscroll = moveCamera;
+moveCamera();
