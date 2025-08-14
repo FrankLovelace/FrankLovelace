@@ -3,42 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frank Lovelace - Universo 3D</title>
-    <!-- Enlazamos nuestro nuevo archivo CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <title>Frank - Developer Hub</title>
+    <!-- La hoja de estilos principal para el hub -->
+    <link rel="stylesheet" href="css/style-hub.css">
 </head>
 <body>
-    <canvas id="bg-canvas"></canvas>
 
-    <!-- Modificamos la capa de contenido -->
-    <main id="content">
-        <section class="scroll-section">
-            <h1>Acto I: El Inicio</h1>
-        </section>
-        <section class="scroll-section">
-            <h1>Acto II: El Portal</h1>
-        </section>
-        <section class="scroll-section">
-            <h1>Acto III: La Tierra</h1>
-        </section>
-        <section class="scroll-section">
-            <h1>Acto IV: Proyectos</h1>
-        </section>
-        <section class="scroll-section">
-            <h1>Acto V: Constelaciones</h1>
-        </section>
+    <!-- Contenedor donde vivirá nuestra escena 3D del hub -->
+    <div id="hub-container"></div>
 
-    <!-- Añadimos el "importmap" para que el navegador sepa qué es "three" -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
+    <!-- UI Persistente: El Asistente "TARS". Esencial para guiar al usuario -->
+    <div id="tars-assistant">
+        <p id="tars-text">Bienvenido a mi universo. Haz clic en un objeto celeste para explorar.</p>
+    </div>
 
-    <!--  Añadimos type="module" al script -->
-    <script type="module" src="js/main.js"></script>
+    <!-- Texto de bienvenida que puede ser animado o desaparecer -->
+    <div id="intro-text">
+        <h1>Hi, I'm <span class="highlight">Frank</span></h1>
+        <p>Developer & Explorer</p>
+    </div>
+    
+    <!-- Nuestro script principal, que construirá y manejará el hub interactivo.
+         Es un módulo para mantener todo organizado. -->
+    <script type="module" src="js/main-hub.js"></script>
+
 </body>
 </html>
