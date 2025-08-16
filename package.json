@@ -1,19 +1,30 @@
 {
   "name": "franklovelace",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+    "private": true,
+  "description": "<!-- **FrankLovelace/FrankLovelace** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run dev --workspace=dev-site",
+    "build:dev": "npm run build --workspace=dev-site",
+    "dev:art": "npm run dev --workspace=art-site",
+    "dev:me": "npm run dev --workspace=me-site"
   },
-  "devDependencies": {
-    "sass": "^1.90.0",
-    "typescript": "~5.8.3",
-    "vite": "^7.1.2"
+   "workspaces": [
+    "dev-site",
+    "art-site",
+    "me-site"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrankLovelace/FrankLovelace.git"
   },
-  "dependencies": {
-    "three": "^0.179.1"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FrankLovelace/FrankLovelace/issues"
+  },
+  "homepage": "https://github.com/FrankLovelace/FrankLovelace#readme"
 }
