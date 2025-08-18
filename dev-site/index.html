@@ -44,10 +44,35 @@
 
         <!-- ACTO IV: Proyectos -->
         <section id="projects" class="scroll-section">
-            <h2>Galaxia de Proyectos</h2>
-            <p>Cada sistema solar es una solución de software construida.</p>
-            <a href="/projects.html" class="cta-button">Ver Proyectos</a>
-        </section>
+    <h2>Galaxia de Proyectos</h2>
+    <p>
+        Cada sistema solar es una solución de software construida. 
+        Te invito a explorar mi trabajo más detallado.
+    </p>
+
+    <!-- 
+        Este enlace es el elemento central. Contiene la imagen de la galaxia 
+        y llevará al usuario a la página dedicada de proyectos.
+    -->
+    <a href="/projects.html" class="galaxy-link" title="Explorar mis proyectos de software">
+        
+        <!-- 
+            La imagen de la galaxia. Usamos la etiqueta <picture> para poder
+            servir diferentes formatos en el futuro si es necesario (ej. .webp)
+            El texto dentro de `alt` es crucial para la accesibilidad.
+        -->
+        <picture>
+            <img src="/public/images/page-content/galaxia.jpg" alt="Una nebulosa en espiral representando la galaxia de proyectos.">
+        </picture>
+        
+        <!-- 
+            Este texto estará superpuesto a la imagen o debajo de ella.
+            Le da al usuario una llamada a la acción clara.
+        -->
+        <span class="cta-text">Explorar Proyectos</span>
+    </a>
+
+</section>
 
         <!-- ACTO V: Credenciales -->
         <section id="credentials" class="scroll-section">
@@ -80,8 +105,8 @@
         <!-- Certificado 3 -->
         <li class="credential-item">
             <a href="/certificate.html?id=sc900" target="_blank" rel="noopener noreferrer">
-                <strong class="credential-title">Nombre del Certificado *</strong>
-                <span class="credential-issuer">Emitido por: AWS</span>
+                <strong class="credential-title">Nombre del Certificado TRES</strong>
+                <span class="credential-issuer">Emitido por: *</span>
                 <p class="credential-description">
                     Pellentesque sed dui ut augue blandit sodales. Fusceumbotron. 
                     Pellentesque vitae magna.
