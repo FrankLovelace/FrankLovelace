@@ -1,37 +1,63 @@
+body, html {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; 
+    background-color: #000;
+}
+
+/* ====================================================== */
+/* CAPAS PRINCIPALES                                      */
+/* ====================================================== */
+
 #bg-canvas {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1; /* Estará en la capa base */
-    outline: none;
+    z-index: 1;
 }
 
-/* 2. El Contenido HTML (Capa Flotante) */
 #content {
-    position: relative; /* Cambiamos a 'relative' para que fluya normalmente */
-    z-index: 2; /* Lo ponemos por encima del canvas */
-    color: #f0f0f0;
-    font-family: system-ui, sans-serif;
+    position: fixed; /* Lo fijamos para que no genere scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none; /* Por defecto, el contenido no es clickeable */
 }
 
 /* ====================================================== */
-/* ESTILOS DEL ESQUELETO                                  */
+/* SECCIONES APILADAS                                     */
 /* ====================================================== */
 .scroll-section {
-    min-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 2rem;
     box-sizing: border-box;
+    padding: 2rem;
+    color: #f0f0f0;
+    font-family: system-ui, sans-serif;
+    
+    /* Por defecto, todas las secciones están invisibles y no ocupan espacio */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
-h1 { font-size: 4rem; }
-h2 { font-size: 3rem; }
-
-a {
-    color: #5DECF5;
-    font-size: 1.2rem;
+/* Clase que añadiremos con JS para hacer visible una sección */
+.scroll-section.is-visible {
+    opacity: 1;
+    pointer-events: auto; /* La sección visible sí es clickeable */
 }
+
+/* Estilos para que el texto sea legible */
+h1 { font-size: 5rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+h2 { font-size: 4rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+a { color: #5DECF5; pointer-events: auto; }
