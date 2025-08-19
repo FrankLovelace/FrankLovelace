@@ -1,0 +1,37 @@
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Estará en la capa base */
+    outline: none;
+}
+
+/* 2. El Contenido HTML (Capa Flotante) */
+#content {
+    position: relative; /* Cambiamos a 'relative' para que fluya normalmente */
+    z-index: 2; /* Lo ponemos por encima del canvas */
+    color: #f0f0f0;
+    font-family: system-ui, sans-serif;
+}
+
+/* ====================================================== */
+/* ESTILOS DEL ESQUELETO                                  */
+/* ====================================================== */
+.scroll-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+h1 { font-size: 4rem; }
+h2 { font-size: 3rem; }
+
+a {
+    color: #5DECF5;
+    font-size: 1.2rem;
+}

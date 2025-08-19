@@ -1,10 +1,9 @@
 {
   "name": "franklovelace",
   "version": "1.0.0",
-    "private": true,
+  "private": true,
   "description": "<!-- **FrankLovelace/FrankLovelace** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.",
   "main": "index.js",
-  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run dev --workspace=dev-site",
@@ -12,7 +11,7 @@
     "dev:art": "npm run dev --workspace=art-site",
     "dev:me": "npm run dev --workspace=me-site"
   },
-   "workspaces": [
+  "workspaces": [
     "dev-site",
     "art-site",
     "me-site"
@@ -27,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/FrankLovelace/FrankLovelace/issues"
   },
-  "homepage": "https://github.com/FrankLovelace/FrankLovelace#readme"
+  "homepage": "https://github.com/FrankLovelace/FrankLovelace#readme",
+  "devDependencies": {
+    "@types/three": "^0.179.0"
+  }
 }
