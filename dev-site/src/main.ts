@@ -1,16 +1,6 @@
 import * as THREE from 'three';
 
-// Asegurar que siempre iniciamos en la parte superior y con la sección de Título Principal visible
-if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-}
-// Forzar la posición del scroll al principio en cargas y al volver con Back/Forward Cache
-window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-window.addEventListener('pageshow', () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-});
-
-// ---- CONFIGURACIÓN BÁSICA ----
+// ---- CONFIGURACIÓN BÁSICA (sin cambios) ----
 const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
@@ -20,6 +10,7 @@ const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
+// ---- ASSETS (sin cambios) ----
 const loader = new THREE.TextureLoader();
 loader.load('/images/uvs-maps/milky-way-image.jpg', (texture) => {
     texture.mapping = THREE.EquirectangularReflectionMapping;
@@ -34,60 +25,43 @@ for (let i = 0; i < 50; i++) {
 }
 scene.add(constellationGroup);
 
+// ---- MOTOR DE PROGRESO Y VIAJE ----
 
-// ---- NUEVO MOTOR DE PROGRESO ----
+// El viaje ahora va de 0 a 100 a medida que el usuario baja.
+let progress = 0;
+const LERP_FACTOR = 0.07;
+let targetProgress = 0;
 
-// Iniciar directamente en el bloque del Título Principal (#hero: 80-100)
-// Usamos 99.9 (no 100) para caer dentro del rango [80,100) usado por la búsqueda de escena
-let progress = 99.9; // Nuestro valor de "viaje", de 0 a 100.
-const LERP_FACTOR = 0.07; // Suavizado del movimiento
-let targetProgress = 99.9;
-
-// Escuchamos la rueda del ratón
 window.addEventListener('wheel', (event) => {
-    // Aumentamos o disminuimos el progreso objetivo
-    if (event.deltaY > 0) { // Rueda hacia abajo
-        targetProgress += 2;
-    } else { // Rueda hacia arriba
-        targetProgress -= 2;
-    }
-    // Limitamos el progreso entre 0 y 100
-    targetProgress = Math.max(0, Math.min(100, targetProgress));
+    // Rueda hacia abajo aumenta el progreso, rueda hacia arriba lo disminuye.
+    const direction = event.deltaY > 0 ? 1 : -1;
+    targetProgress += direction * 3; // Aumentamos la sensibilidad
+    targetProgress = Math.max(0, Math.min(100, targetProgress)); // Limitamos entre 0 y 100
 });
 
-// ---- El "Guion" de nuestro viaje ----
+// ---- El "Guion" del viaje (Ahora en orden natural) ----
 const sections = document.querySelectorAll('.scroll-section');
 const timeline = [
-    // Progreso 0-20: Muestra la sección de credenciales
-    { start: 0, end: 20, sectionId: '#credentials', cameraStart: 5, cameraEnd: 8 },
-    // Progreso 20-40: Muestra la sección del portal
-    { start: 20, end: 40, sectionId: '#portal', cameraStart: 8, cameraEnd: 12 },
-    // Progreso 40-60: Muestra la sección de proyectos
-    { start: 40, end: 60, sectionId: '#projects', cameraStart: 12, cameraEnd: 16 },
-    // Progreso 60-80: Muestra la sección "Sobre Mí"
-    { start: 60, end: 80, sectionId: '#about', cameraStart: 16, cameraEnd: 20 },
-    // Progreso 80-100: Muestra el título principal
-    { start: 80, end: 100, sectionId: '#hero', cameraStart: 20, cameraEnd: 25 },
+    { start: 0,   end: 20,  sectionId: '#hero',        cameraStart: 25, cameraEnd: 20 },
+    { start: 20,  end: 40,  sectionId: '#about',       cameraStart: 20, cameraEnd: 16 },
+    { start: 40,  end: 60,  sectionId: '#projects',    cameraStart: 16, cameraEnd: 12 },
+    { start: 60,  end: 80,  sectionId: '#portal',      cameraStart: 12, cameraEnd: 8 },
+    { start: 80,  end: 100, sectionId: '#credentials', cameraStart: 8,  cameraEnd: 5 },
 ];
 
 const lerp = (start: number, end: number, p: number): number => start * (1 - p) + end * p;
 
 function updateScene(): void {
-    // Suavizamos el progreso actual hacia el progreso objetivo
     progress = lerp(progress, targetProgress, LERP_FACTOR);
 
-    // Encontrar la escena actual en la línea de tiempo
     const currentScene = timeline.find(scene => progress >= scene.start && progress < scene.end);
 
-    // Actualizar la visibilidad y la interactividad de las secciones HTML
+    // Esta lógica es perfecta. No necesita cambiar.
     sections.forEach(section => {
-        const htmlSection = section as HTMLElement;
         if (currentScene && section.matches(currentScene.sectionId)) {
-            htmlSection.classList.add('is-visible');
-            htmlSection.style.pointerEvents = 'auto'; // Hacer tangible
+            section.classList.add('is-visible');
         } else {
-            htmlSection.classList.remove('is-visible');
-            htmlSection.style.pointerEvents = 'none'; // Hacer intangible
+            section.classList.remove('is-visible');
         }
     });
 
@@ -96,6 +70,9 @@ function updateScene(): void {
         const sceneDuration = currentScene.end - currentScene.start;
         const progressWithinScene = (progress - currentScene.start) / sceneDuration;
         camera.position.z = lerp(currentScene.cameraStart, currentScene.cameraEnd, progressWithinScene);
+    } else if (progress < timeline[0].start) {
+        // Aseguramos que la cámara esté en la posición inicial si el progreso es < 0
+        camera.position.z = timeline[0].cameraStart;
     }
     
     constellationGroup.rotation.y += 0.0005;
@@ -104,11 +81,9 @@ function updateScene(): void {
 // ---- BUCLE DE ANIMACIÓN ----
 function animate(): void {
     requestAnimationFrame(animate);
-    updateScene(); // Actualizamos la escena en cada frame
+    updateScene();
     renderer.render(scene, camera);
 }
-// Aplicar estado inicial antes de arrancar el bucle para que el HERO sea visible de inmediato
-updateScene();
 animate();
 
 // ---- MANEJAR REDIMENSIONAMIENTO ----

@@ -49,15 +49,26 @@ body, html {
     /* Por defecto, todas las secciones están invisibles y no ocupan espacio */
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
+     pointer-events: none; /* Por defecto, el contenido no es clickeable */
+     z-index: 5; 
 }
 
 /* Clase que añadiremos con JS para hacer visible una sección */
 .scroll-section.is-visible {
     opacity: 1;
     pointer-events: auto; /* La sección visible sí es clickeable */
+     z-index: 10;
 }
 
 /* Estilos para que el texto sea legible */
 h1 { font-size: 5rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
 h2 { font-size: 4rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
 a { color: #5DECF5; pointer-events: auto; }
+
+.scroll-section.is-visible {
+    opacity: 1;
+    pointer-events: auto; /* La sección visible sí es clickeable */
+}
+
+h1 { font-size: 5rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+h2 { font-size: 4rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
