@@ -1,5 +1,15 @@
 import * as THREE from 'three';
 
+// Asegurar que siempre iniciamos en la parte superior y con la sección de Título Principal visible
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+// Forzar la posición del scroll al principio en cargas y al volver con Back/Forward Cache
+window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+window.addEventListener('pageshow', () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+});
+
 // ---- CONFIGURACIÓN BÁSICA ----
 const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -27,9 +37,11 @@ scene.add(constellationGroup);
 
 // ---- NUEVO MOTOR DE PROGRESO ----
 
-let progress = 0; // Nuestro valor de "viaje", de 0 a 100.
+// Iniciar directamente en el bloque del Título Principal (#hero: 80-100)
+// Usamos 99.9 (no 100) para caer dentro del rango [80,100) usado por la búsqueda de escena
+let progress = 99.9; // Nuestro valor de "viaje", de 0 a 100.
 const LERP_FACTOR = 0.07; // Suavizado del movimiento
-let targetProgress = 0;
+let targetProgress = 99.9;
 
 // Escuchamos la rueda del ratón
 window.addEventListener('wheel', (event) => {
@@ -67,12 +79,15 @@ function updateScene(): void {
     // Encontrar la escena actual en la línea de tiempo
     const currentScene = timeline.find(scene => progress >= scene.start && progress < scene.end);
 
-    // Actualizar la visibilidad de las secciones HTML
+    // Actualizar la visibilidad y la interactividad de las secciones HTML
     sections.forEach(section => {
+        const htmlSection = section as HTMLElement;
         if (currentScene && section.matches(currentScene.sectionId)) {
-            section.classList.add('is-visible');
+            htmlSection.classList.add('is-visible');
+            htmlSection.style.pointerEvents = 'auto'; // Hacer tangible
         } else {
-            section.classList.remove('is-visible');
+            htmlSection.classList.remove('is-visible');
+            htmlSection.style.pointerEvents = 'none'; // Hacer intangible
         }
     });
 
@@ -92,6 +107,8 @@ function animate(): void {
     updateScene(); // Actualizamos la escena en cada frame
     renderer.render(scene, camera);
 }
+// Aplicar estado inicial antes de arrancar el bucle para que el HERO sea visible de inmediato
+updateScene();
 animate();
 
 // ---- MANEJAR REDIMENSIONAMIENTO ----
