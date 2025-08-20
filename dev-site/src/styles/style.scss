@@ -72,3 +72,53 @@ a { color: #5DECF5; pointer-events: auto; }
 
 h1 { font-size: 5rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
 h2 { font-size: 4rem; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+#hero {
+    justify-content: center; 
+}
+a { color: #5DECF5; pointer-events: auto; }
+
+#main-title {
+    font-family:  sans-serif; 
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 150px;
+}
+
+#main-title span {
+    display: block; /* Trata cada <span> como una línea separada */
+    line-height: 1.2; 
+}
+.about-bio {
+    max-width: 600px; // Evita que el texto sea demasiado ancho en pantallas grandes
+    margin-bottom: 2rem;
+}
+
+.visual-links {
+    display: flex;
+    gap: 2rem; // Espacio entre los logos
+    justify-content: center;
+    align-items: center;
+}
+
+.visual-link-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.1); // Agrandamos el logo al pasar el ratón
+    }
+
+    img {
+        width: 150px;  
+        height: 150px;
+        margin-bottom: 0.5rem;
+    }
+
+    span {
+        font-size: 1rem;
+        color: #f0f0f0;
+    }
+}

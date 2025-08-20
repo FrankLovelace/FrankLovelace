@@ -21,34 +21,36 @@
         </section>
 
         <section id="about" class="scroll-section">
+    
     <h2>Centro de Mando</h2>
-    <p>
-        Toda misión tiene un origen. Este es el mío.
+    
+    <!-- Texto modificado, más directo y personal -->
+    <p class="about-bio">
+        Mi fascinación por la física y las matemáticas me enseñó a ver el mundo como un sistema complejo. 
+        Hoy, aplico esa misma visión para construir universos digitales como desarrollador de software.
     </p>
 
     <!-- 
-        Este enlace actuará como nuestro "botón" placeholder.
-        En el futuro, el modelo 3D de la Tierra reemplazará a este botón,
-        pero la funcionalidad de enlace se mantendrá.
-        Le damos un 'role="button"' para mejorar la accesibilidad y
-        dejar claro que, aunque es un enlace, actúa como un botón.
+        Nuevo contenedor para los enlaces visuales. 
+        Esto nos permitirá estilarlos fácilmente con CSS.
     -->
-    <a href="/about.html" class="earth-link" role="button" title="Conocer más sobre mí">
+    <nav class="visual-links">
         
-        <!-- 
-            Usaremos un div para representar visualmente el botón/planeta.
-            Con CSS le daremos forma redonda y un estilo de planeta.
-        -->
-        <div class="earth-placeholder">
-            <!-- Un texto simple para la versión esqueleto -->
-            <span>Sobre Mí</span>
-        </div>
+        <!-- Enlace a GitHub -->
+        <a href="https://github.com/FrankLovelace" class="visual-link-item" target="_blank" rel="noopener noreferrer" title="Explora mi código en GitHub">
+            <img src="/images/page-content/github-logo.png" alt="Logo de GitHub">
+        </a>
 
-    </a>
+        <!-- Enlace a Instagram -->
+        <a href="https://www.instagram.com/franklovegood?igsh=Z3c2cTUxMjVtaWpq" class="visual-link-item" target="_blank" rel="noopener noreferrer" title="Sígueme en Instagram">
+            <!-- 
+                Reemplaza 'instagram-logo.png' con la ruta a tu imagen.
+            -->
+            <img src="/images/page-content/instagram-logo.png" alt="Logo de Instagram">
+        </a>
 
-    <nav class="contact-links-minimal">
-        <a href="https://github.com/FrankLovelace" target="_blank" rel="noopener noreferrer">GitHub</a>
     </nav>
+    
 </section>
 
         <!-- ACTO IV: Proyectos -->
