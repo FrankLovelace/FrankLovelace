@@ -10,36 +10,45 @@ const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
-// ---- ASSETS (sin cambios) ----
+// ---- ASSETS Y OBJETOS 3D (sin cambios) ----
+let universeTexture: THREE.Texture | null = null;
+let portalSphere: THREE.Mesh | null = null;
 const loader = new THREE.TextureLoader();
+
 loader.load('/images/uvs-maps/milky-way-image.jpg', (texture) => {
+    universeTexture = texture;
     texture.mapping = THREE.EquirectangularReflectionMapping;
     scene.background = texture;
+    createPortalSphere();
 });
+
 scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-const constellationGroup = new THREE.Group();
-for (let i = 0; i < 50; i++) {
-    const star = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    star.position.set((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
-    constellationGroup.add(star);
+
+function createPortalSphere(): void {
+    if (!universeTexture) return;
+    const portalGeometry = new THREE.SphereGeometry(4, 64, 64);
+    const portalMaterial = new THREE.MeshStandardMaterial({
+        map: universeTexture,
+        metalness: 0.2,
+        roughness: 0.7,
+    });
+    portalSphere = new THREE.Mesh(portalGeometry, portalMaterial);
+    portalSphere.visible = false;
+    scene.add(portalSphere);
 }
-scene.add(constellationGroup);
 
-// ---- MOTOR DE PROGRESO Y VIAJE ----
-
-// El viaje ahora va de 0 a 100 a medida que el usuario baja.
+// ---- MOTOR DE PROGRESO Y VIAJE (sin cambios) ----
 let progress = 0;
 const LERP_FACTOR = 0.07;
 let targetProgress = 0;
 
 window.addEventListener('wheel', (event) => {
-    // Rueda hacia abajo aumenta el progreso, rueda hacia arriba lo disminuye.
     const direction = event.deltaY > 0 ? 1 : -1;
-    targetProgress += direction * 3; // Aumentamos la sensibilidad
-    targetProgress = Math.max(0, Math.min(100, targetProgress)); // Limitamos entre 0 y 100
+    targetProgress += direction * 3;
+    targetProgress = Math.max(0, Math.min(100, targetProgress));
 });
 
-// ---- El "Guion" del viaje (Ahora en orden natural) ----
+// ---- El "Guion" del viaje (sin cambios) ----
 const sections = document.querySelectorAll('.scroll-section');
 const timeline = [
     { start: 0,   end: 20,  sectionId: '#hero',        cameraStart: 25, cameraEnd: 20 },
@@ -51,42 +60,86 @@ const timeline = [
 
 const lerp = (start: number, end: number, p: number): number => start * (1 - p) + end * p;
 
+// ---- EL DIRECTOR DE ORQUESTA (sin cambios) ----
 function updateScene(): void {
     progress = lerp(progress, targetProgress, LERP_FACTOR);
-
     const currentScene = timeline.find(scene => progress >= scene.start && progress < scene.end);
-
-    // Esta lógica es perfecta. No necesita cambiar.
     sections.forEach(section => {
-        if (currentScene && section.matches(currentScene.sectionId)) {
-            section.classList.add('is-visible');
-        } else {
-            section.classList.remove('is-visible');
-        }
+        section.classList.toggle('is-visible', currentScene !== undefined && section.matches(currentScene.sectionId));
     });
-
-    // Actualizar la posición de la cámara 3D
+    if (portalSphere) {
+        const isPortalScene = currentScene?.sectionId === '#portal';
+        portalSphere.visible = isPortalScene;
+        if (isPortalScene) {
+            portalSphere.position.z = 2;
+        }
+    }
     if (currentScene) {
         const sceneDuration = currentScene.end - currentScene.start;
         const progressWithinScene = (progress - currentScene.start) / sceneDuration;
         camera.position.z = lerp(currentScene.cameraStart, currentScene.cameraEnd, progressWithinScene);
     } else if (progress < timeline[0].start) {
-        // Aseguramos que la cámara esté en la posición inicial si el progreso es < 0
         camera.position.z = timeline[0].cameraStart;
     }
-    
-    constellationGroup.rotation.y += 0.0005;
 }
 
-// ---- BUCLE DE ANIMACIÓN ----
+
+// ---- LÓGICA DE INTERACCIÓN (ARRASTRE Y CLIC) ----
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let isDragging = false;
+let hasDragged = false; // <-- NUEVA VARIABLE para detectar si hubo movimiento
+const rotationSpeed = 0.005;
+
+window.addEventListener('mousedown', (event) => {
+    if (!portalSphere || !portalSphere.visible) return;
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(portalSphere);
+
+    if (intersects.length > 0) {
+        isDragging = true;
+        hasDragged = false; // Reseteamos el estado de arrastre en cada nuevo clic
+    }
+});
+
+window.addEventListener('mousemove', (event) => {
+    if (isDragging && portalSphere) {
+        hasDragged = true; // <-- MARCAMOS que ha habido movimiento
+        portalSphere.rotation.y += event.movementX * rotationSpeed;
+        portalSphere.rotation.x += event.movementY * rotationSpeed;
+    }
+});
+
+window.addEventListener('mouseup', () => {
+    // ---- LÓGICA DE CLIC AÑADIDA ----
+    // Si soltamos el clic Y no hemos arrastrado, lo consideramos un clic simple.
+    if (isDragging && !hasDragged) {
+        console.log("Clic detectado. Navegando a /portal.html");
+        window.location.href = '/portal.html';
+    }
+    
+    // Desactivamos el modo arrastre sin importar qué
+    isDragging = false;
+});
+
+
+// ---- BUCLE DE ANIMACIÓN PRINCIPAL (sin cambios) ----
 function animate(): void {
     requestAnimationFrame(animate);
     updateScene();
+
+    if (!isDragging && portalSphere) {
+        portalSphere.rotation.y += 0.0005;
+    }
+
     renderer.render(scene, camera);
 }
 animate();
 
-// ---- MANEJAR REDIMENSIONAMIENTO ----
+// ---- MANEJAR REDIMENSIONAMIENTO (sin cambios) ----
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
