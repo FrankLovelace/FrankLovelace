@@ -49,7 +49,6 @@ window.addEventListener('wheel', (event) => {
 });
 
 // ---- El "Guion" del viaje (sin cambios) ----
-const sections = document.querySelectorAll('.scroll-section');
 const timeline = [
     { start: 0,   end: 20,  sectionId: '#hero',        cameraStart: 25, cameraEnd: 20 },
     { start: 20,  end: 40,  sectionId: '#about',       cameraStart: 20, cameraEnd: 16 },
@@ -62,42 +61,61 @@ const lerp = (start: number, end: number, p: number): number => start * (1 - p) 
 
 // ---- EL DIRECTOR DE ORQUESTA  ----
 function updateScene(): void {
+    // El progreso y el lerp para suavizarlo no cambian
     progress = lerp(progress, targetProgress, LERP_FACTOR);
 
-    const currentScene = timeline.find(scene => progress >= scene.start && progress < scene.end);
+    // 1. Iteramos sobre TODAS las escenas del timeline para calcular el estado de CADA UNA
+    timeline.forEach(sceneData => {
+        const htmlSection = document.querySelector(sceneData.sectionId) as HTMLElement;
+        if (!htmlSection) return;
 
-    // 1. Actualizar TODAS las secciones HTML en cada frame
-    sections.forEach(section => {
-        const htmlSection = section as HTMLElement;
-        const sectionId = `#${section.id}`;
-        const sceneData = timeline.find(s => s.sectionId === sectionId);
-        if (!sceneData) return;
-
-        // Calculamos la "distancia" del progreso actual al centro de esta escena
-        const sceneCenter = (sceneData.start + sceneData.end) / 2;
-        const distanceToCenter = Math.abs(progress - sceneCenter);
+        const sceneDuration = sceneData.end - sceneData.start;
         
-        // El ancho de la "zona de visibilidad" de la escena
-        const sceneWidth = (sceneData.end - sceneData.start) / 2;
+        // Calculamos qué tan "avanzados" estamos dentro del rango de esta escena
+        // Un valor negativo significa que aún no hemos llegado.
+        // Un valor entre 0 y 1 significa que estamos dentro.
+        // Un valor > 1 significa que ya la hemos pasado.
+        const progressWithinScene = (progress - sceneData.start) / sceneDuration;
 
-        // Calculamos la opacidad y la escala. Serán 1 (máximo) en el centro de la escena
-        // y 0 en los bordes.
-        const scale = Math.max(0, 1 - (distanceToCenter / sceneWidth));
-        const opacity = Math.pow(scale, 2); // Usamos una potencia para que el fade-in/out sea más rápido
+        let opacity = 0;
+        let scale = 0.5;
 
-        // Aplicamos los valores al estilo del elemento
-        htmlSection.style.setProperty('--scale', `${scale}`);
+        if (progressWithinScene >= 0 && progressWithinScene <= 1) {
+            // Estamos DENTRO de la escena
+            if (progressWithinScene < 0.5) {
+                // Fade In (primera mitad)
+                opacity = progressWithinScene * 2;
+                scale = lerp(0.5, 1, progressWithinScene * 2);
+            } else {
+                // Fade Out (segunda mitad)
+                opacity = 1 - (progressWithinScene - 0.5) * 2;
+                scale = lerp(1, 1.5, (progressWithinScene - 0.5) * 2);
+            }
+        }
+        
+        // Excepción para la primera escena (#hero)
+        if (sceneData.sectionId === '#hero' && progress < sceneData.end) {
+            // Si estamos en la primera escena o antes, la forzamos a ser visible.
+            opacity = 1 - (progressWithinScene * 0.5); // Desaparece más lento
+            scale = 1;
+        }
+
+        // Aplicamos los valores
         htmlSection.style.setProperty('--opacity', `${opacity}`);
-        htmlSection.style.setProperty('--pointer-events', opacity > 0.5 ? 'auto' : 'none');
+        htmlSection.style.setProperty('--scale', `${scale}`);
+        htmlSection.style.setProperty('--pointer-events', opacity > 0.8 ? 'auto' : 'none');
     });
 
-    // 2. Actualizar objetos 3D (lógica sin cambios)
+    // 2. Encontrar la escena actual para la cámara y los objetos 3D
+    const currentScene = timeline.find(scene => progress >= scene.start && progress < scene.end);
+
+    // 3. Actualizar objetos 3D (lógica sin cambios)
     if (portalSphere) {
         portalSphere.visible = currentScene?.sectionId === '#portal';
         if (portalSphere.visible) portalSphere.position.z = 2;
     }
 
-    // 3. Actualizar la cámara (lógica sin cambios)
+    // 4. Actualizar la cámara (lógica sin cambios)
     if (currentScene) {
         const sceneDuration = currentScene.end - currentScene.start;
         const progressWithinScene = (progress - currentScene.start) / sceneDuration;
