@@ -46,17 +46,15 @@ body, html {
     font-family: system-ui, sans-serif;
     color: #f0f0f0;
 
-    // --- NUEVAS PROPIEDADES ---
-    // Usaremos transform para escalar y opacidad para desvanecer.
-    // Los valores vendrán de variables que controlará nuestro TS.
-    transform: scale(var(--scale, 0.5)); // Por defecto, están encogidas
-    opacity: var(--opacity, 0);          // Por defecto, son invisibles
-    pointer-events: var(--pointer-events, none); // Por defecto, intangibles
+    /* Propiedades controladas por TS */
+    transform: scale(var(--scale, 0.5));
+    opacity: var(--opacity, 0);
 
-    // Hacemos que la transición sea suave
+    /* Por defecto, TODAS son intangibles y están en la misma capa */
+    pointer-events: none;
+    z-index: 5;
+
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-
-    // Optimización de rendimiento: le decimos al navegador qué propiedades animaremos.
     will-change: transform, opacity;
 }
 
@@ -137,4 +135,10 @@ a { color: #5DECF5; pointer-events: auto; }
 
 #portal.is-visible {
     cursor: pointer;
+}
+
+.scroll-section.is-active {
+    /* La sección activa se vuelve tangible y salta a la capa superior */
+    pointer-events: auto;
+    z-index: 10;
 }

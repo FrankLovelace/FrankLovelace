@@ -59,63 +59,66 @@ const timeline = [
 
 const lerp = (start: number, end: number, p: number): number => start * (1 - p) + end * p;
 
+// Get all sections for managing active states
+const sections = document.querySelectorAll('#hero, #about, #projects, #portal, #credentials') as NodeListOf<HTMLElement>;
+
 // ---- EL DIRECTOR DE ORQUESTA  ----
 function updateScene(): void {
-    // El progreso y el lerp para suavizarlo no cambian
     progress = lerp(progress, targetProgress, LERP_FACTOR);
 
-    // 1. Iteramos sobre TODAS las escenas del timeline para calcular el estado de CADA UNA
+    let activeSection: HTMLElement | null = null;
+    let maxOpacity = 0;
+
+    // 1. Calcular el estado de todas las secciones
     timeline.forEach(sceneData => {
         const htmlSection = document.querySelector(sceneData.sectionId) as HTMLElement;
         if (!htmlSection) return;
 
         const sceneDuration = sceneData.end - sceneData.start;
-        
-        // Calculamos qué tan "avanzados" estamos dentro del rango de esta escena
-        // Un valor negativo significa que aún no hemos llegado.
-        // Un valor entre 0 y 1 significa que estamos dentro.
-        // Un valor > 1 significa que ya la hemos pasado.
         const progressWithinScene = (progress - sceneData.start) / sceneDuration;
 
         let opacity = 0;
         let scale = 0.5;
 
         if (progressWithinScene >= 0 && progressWithinScene <= 1) {
-            // Estamos DENTRO de la escena
             if (progressWithinScene < 0.5) {
-                // Fade In (primera mitad)
                 opacity = progressWithinScene * 2;
                 scale = lerp(0.5, 1, progressWithinScene * 2);
             } else {
-                // Fade Out (segunda mitad)
                 opacity = 1 - (progressWithinScene - 0.5) * 2;
                 scale = lerp(1, 1.5, (progressWithinScene - 0.5) * 2);
             }
         }
         
-        // Excepción para la primera escena (#hero)
         if (sceneData.sectionId === '#hero' && progress < sceneData.end) {
-            // Si estamos en la primera escena o antes, la forzamos a ser visible.
-            opacity = 1 - (progressWithinScene * 0.5); // Desaparece más lento
+            opacity = 1 - (progressWithinScene * 0.5);
             scale = 1;
         }
 
-        // Aplicamos los valores
+        // Aplicamos los valores visuales
         htmlSection.style.setProperty('--opacity', `${opacity}`);
         htmlSection.style.setProperty('--scale', `${scale}`);
-        htmlSection.style.setProperty('--pointer-events', opacity > 0.8 ? 'auto' : 'none');
+
+        // Guardamos una referencia a la sección más visible
+        if (opacity > maxOpacity) {
+            maxOpacity = opacity;
+            activeSection = htmlSection;
+        }
     });
 
-    // 2. Encontrar la escena actual para la cámara y los objetos 3D
+    // 2. Asignar la clase 'is-active' a la sección más prominente
+    sections.forEach(section => {
+        section.classList.toggle('is-active', section === activeSection);
+    });
+
+    // 3. Encontrar la escena actual para la cámara y los objetos 3D
     const currentScene = timeline.find(scene => progress >= scene.start && progress < scene.end);
 
-    // 3. Actualizar objetos 3D (lógica sin cambios)
+    // 4. Actualizar objetos 3D y cámara (sin cambios)
     if (portalSphere) {
         portalSphere.visible = currentScene?.sectionId === '#portal';
         if (portalSphere.visible) portalSphere.position.z = 2;
     }
-
-    // 4. Actualizar la cámara (lógica sin cambios)
     if (currentScene) {
         const sceneDuration = currentScene.end - currentScene.start;
         const progressWithinScene = (progress - currentScene.start) / sceneDuration;
