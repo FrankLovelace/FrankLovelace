@@ -20,6 +20,27 @@ onMounted(() => {
     });
   });
 });
+
+const certificates = [
+  {
+    id: 1,
+    title: "Red Hat System Administration I ",
+    subtitle: "Red Hat (RH124-RHA V9.3)",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Red_Hat_logo.svg/1200px-Red_Hat_logo.svg.png",
+    pdfLink: "/certs/FranciscoGallegos_SysAdmin I.pdf"
+  },
+  {
+    id: 2,
+    title: "Red Hat System Administration II",
+    subtitle: "Red Hat (RH134-RHCA V9.3)",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Red_Hat_logo.svg/1200px-Red_Hat_logo.svg.png",
+    pdfLink: "/certs/FranciscoGallegos_SysAdmin II.pdf"
+  }
+];
+
+const openPdf = (link: string) => {
+  window.open(link, '_blank');
+};
 </script>
 
 <template>
@@ -135,9 +156,26 @@ onMounted(() => {
         </p>
       </div>
     </FullScreenSection>
-    <FullScreenSection class="panel bg-purple-900 z-30">
-      <h1 class="text-5xl font-bold">Sección 4</h1>
-      <p class="mt-4 text-xl">Lorem ipsum</p>
+    <FullScreenSection class="panel bg-purple-900 z-30 flex flex-col items-center justify-center">
+      <div class="max-w-4xl w-full px-6">
+        <h2 class="text-5xl font-bold text-center mb-12">Certificaciones</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div
+            v-for="cert in certificates"
+            :key="cert.id"
+            class="bg-white/10 backdrop-blur-sm p-6 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all border border-white/10"
+            @click="openPdf(cert.pdfLink)"
+          >
+            <div class="bg-white p-2 rounded-full w-16 h-16 flex-shrink-0 flex items-center justify-center">
+              <img :src="cert.icon" :alt="cert.title" class="w-full h-full object-contain" />
+            </div>
+            <div>
+              <h3 class="font-bold text-lg leading-tight">{{ cert.title }}</h3>
+              <p class="text-purple-200 text-sm mt-1">{{ cert.subtitle }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </FullScreenSection>
 
     <div class="h-screen bg-transparent"></div>
