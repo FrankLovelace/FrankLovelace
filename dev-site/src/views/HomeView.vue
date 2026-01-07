@@ -3,6 +3,7 @@ import { onMounted } from 'vue';
 import FullScreenSection from '@/components/FullScreenSection.vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import TheEarth from '@/components/TheEarth.vue';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -125,11 +126,15 @@ onMounted(() => {
       </div>
     </FullScreenSection>
 
-    <FullScreenSection class="panel bg-indigo-900 z-20">
-      <h1 class="text-5xl font-bold">Sección 3</h1>
-      <p class="mt-4 text-xl">Lorem ipsum</p>
-    </FullScreenSection>
+    <FullScreenSection class="panel bg-black z-20 relative overflow-hidden">
+      <TheEarth />
 
+      <div class="absolute bottom-10 left-0 w-full text-center pointer-events-none z-30">
+        <p class="text-cyan-200/50 text-sm tracking-[0.3em] uppercase animate-pulse">
+            Arrastra para explorar • Haz clic para entrar al Portal
+        </p>
+      </div>
+    </FullScreenSection>
     <FullScreenSection class="panel bg-purple-900 z-30">
       <h1 class="text-5xl font-bold">Sección 4</h1>
       <p class="mt-4 text-xl">Lorem ipsum</p>
