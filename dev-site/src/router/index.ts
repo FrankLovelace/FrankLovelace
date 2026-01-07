@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import PortalView from '../views/PortalView.vue'
 import projectsView from '../views/ProjectsView.vue'
 
 
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/proyectos',
       name: 'proyectos',
       component: projectsView
+    },
+    {
+      path: '/portal',
+      name: 'portal',
+      component: PortalView
     }
   ],
 })
