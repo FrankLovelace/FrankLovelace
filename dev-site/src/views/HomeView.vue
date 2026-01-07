@@ -6,6 +6,33 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import TheEarth from '@/components/TheEarth.vue';
 
+const techStack = [
+  {
+    category: "Backend & Logic",
+    color: "text-blue-400",
+    border: "border-blue-500/30",
+    skills: [".NET 8 (C#)", "ASP.NET Core", "Java 21", "Entity Framework", "Blazor Server/WASM", "LINQ", "RESTful APIs", "PaperMC/Velocity API"]
+  },
+  {
+    category: "Frontend & UX",
+    color: "text-emerald-400",
+    border: "border-emerald-500/30",
+    skills: ["Vue.js 3", "TypeScript", "Tailwind CSS", "Vite", "Pinia", "ApexCharts", "SignalR (Client)"]
+  },
+  {
+    category: "Cloud & DevOps",
+    color: "text-orange-400",
+    border: "border-orange-500/30",
+    skills: ["Azure Cloud", "Docker & Compose", "GitHub Actions (CI/CD)", "Nginx Reverse Proxy", "Linux (Ubuntu/RHEL)", "Cloudflare tunnels"]
+  },
+  {
+    category: "Data & Security",
+    color: "text-purple-400",
+    border: "border-purple-500/30",
+    skills: ["SQL Server", "MySQL / MariaDB", "SQLite", "JWT Auth", "ASP.NET Identity", "RBAC Security", "SSH Tunneling"]
+  }
+];
+
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 const activeSection = ref(0);
@@ -76,12 +103,9 @@ const openPdf = (link: string) => {
         class="group relative w-4 h-4 flex items-center justify-center"
         aria-label="Ir a sección"
       >
-        <div
-          class="w-3 h-3 rounded-full border border-gray-500 transition-all duration-300 group-hover:border-cyan-400"
-          :class="{ 'bg-cyan-500 border-cyan-500 scale-125': activeSection === index }"
-        ></div>
+        <div class="w-2 h-2 rounded-full border border-gray-600 bg-transparent group-hover:bg-white group-hover:border-white transition-all duration-300"></div>
 
-        <span class="absolute right-8 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-mono text-cyan-400 whitespace-nowrap">
+        <span class="absolute right-8 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-mono text-gray-400 whitespace-nowrap">
           Sección {{ index + 1 }}
         </span>
       </button>
@@ -178,6 +202,49 @@ const openPdf = (link: string) => {
         <p class="text-cyan-200/50 text-sm tracking-[0.3em] uppercase animate-pulse">
             Arrastra para explorar • Haz clic para entrar al Portal
         </p>
+      </div>
+    </FullScreenSection>
+
+    <FullScreenSection class="panel bg-gray-900 z-20 relative overflow-hidden">
+
+      <div class="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black"></div>
+
+      <div class="relative z-10 w-full max-w-7xl px-6">
+
+        <div class="text-center mb-12">
+          <h2 class="text-4xl md:text-6xl font-bold text-white tracking-tighter mb-4">
+            Mi Stack
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+
+          <div
+            v-for="(stack, index) in techStack"
+            :key="index"
+            class="group bg-gray-800/50 backdrop-blur-sm border rounded-xl p-6 hover:bg-gray-800/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+            :class="stack.border"
+          >
+            <div class="flex items-center mb-4 border-b border-gray-700 pb-2">
+              <div class="w-2 h-2 rounded-full mr-3 animate-pulse" :class="stack.color.replace('text', 'bg')"></div>
+              <h3 class="text-xl font-bold font-mono uppercase" :class="stack.color">
+                {{ stack.category }}
+              </h3>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="skill in stack.skills"
+                :key="skill"
+                class="px-3 py-1 text-xs md:text-sm font-medium text-gray-300 bg-black/40 border border-gray-700 rounded hover:border-gray-500 hover:text-white transition-colors cursor-default"
+              >
+                {{ skill }}
+              </span>
+            </div>
+          </div>
+
+        </div>
       </div>
     </FullScreenSection>
 
