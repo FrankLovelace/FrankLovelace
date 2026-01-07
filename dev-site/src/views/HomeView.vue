@@ -65,7 +65,6 @@ onMounted(() => {
 
         </div>
 
-        <!-- Indicador de Scroll -->
         <div class="absolute bottom-10 animate-bounce">
             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
@@ -75,9 +74,55 @@ onMounted(() => {
       </div>
     </FullScreenSection>
 
-    <FullScreenSection class="panel bg-blue-900 z-10">
-      <h1 class="text-5xl font-bold">Sección 2</h1>
-      <p class="mt-4 text-xl">Lorem ipsum</p>
+    <FullScreenSection class="panel bg-black z-10 relative overflow-hidden">
+
+      <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-indigo-900 via-black to-black opacity-90"></div>
+      <div class="absolute -top-40 -right-40 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+      <div class="absolute top-40 left-20 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s"></div>
+
+      <div class="relative z-10 max-w-6xl w-full px-6">
+
+        <div class="text-center mb-12">
+          <h2 class="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-4">
+            Galaxia de Proyectos
+          </h2>
+          <p class="text-gray-400 text-lg">Explora algunos de mis sistemas desplegados.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+          <RouterLink to="/proyectos" class="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+            <div class="h-40 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl mb-4 flex items-center justify-center group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all">
+              <span class="text-4xl"></span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">primero</h3>
+            <p class="text-gray-400 text-sm">Lorem ipsum</p>
+            <div class="mt-4 flex gap-2">
+              <span class="text-xs py-1 px-2 rounded-full bg-blue-900/50 text-blue-200 border border-blue-700">lorem</span>
+            </div>
+          </RouterLink>
+
+          <RouterLink to="/proyectos" class="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+            <div class="h-40 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-xl mb-4 flex items-center justify-center group-hover:from-emerald-500/30 group-hover:to-teal-500/30 transition-all">
+              <span class="text-4xl"></span>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Segundo</h3>
+            <p class="text-gray-400 text-sm">Lorem ipsum</p>
+            <div class="mt-4 flex gap-2">
+              <span class="text-xs py-1 px-2 rounded-full bg-emerald-900/50 text-emerald-200 border border-emerald-700">Lorem</span>
+            </div>
+          </RouterLink>
+
+           <RouterLink to="/proyectos" class="group relative bg-gradient-to-br from-blue-900/40 to-black border border-blue-500/30 rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-blue-400 transition-all duration-300 cursor-pointer">
+            <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-900/50 group-hover:scale-110 transition-transform">
+               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white group-hover:text-blue-300 transition-colors">Ver Galería Completa</h3>
+            <p class="text-gray-400 text-sm mt-2">Explora mis proyectos en detalle</p>
+          </RouterLink>
+
+        </div>
+      </div>
     </FullScreenSection>
 
     <FullScreenSection class="panel bg-indigo-900 z-20">
