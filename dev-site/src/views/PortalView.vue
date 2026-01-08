@@ -1,30 +1,108 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
+import { ref } from 'vue';
+
+const meImage = "images/me.jpeg";
+const artImage = "images/art.jpeg";
+
+const hoverSide = ref<'none' | 'me' | 'art'>('none');
 </script>
+
 <template>
-  <div class="min-h-screen bg-black flex flex-col items-center justify-center text-white relative overflow-hidden">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-900/40 via-black to-black animate-pulse"></div>
+  <div class="relative w-full h-screen bg-black overflow-hidden">
 
-    <div class="z-10 text-center p-8 border border-purple-500/30 bg-black/50 backdrop-blur-md rounded-2xl max-w-2xl">
-      <h1 class="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-6">
-        PORTAL
-      </h1>
-      <p class="text-xl text-gray-300 mb-10">
-        Lorem ipsum
-      </p>
-
-      <div class="flex flex-col md:flex-row gap-6 justify-center">
-        <a href="https://me.franklovelace.dev" class="px-8 py-4 bg-gray-800 hover:bg-cyan-900 border border-cyan-700 rounded-lg transition-all">
-            Ir al Blog (@ME)
-        </a>
-        <a href="https://art.franklovelace.dev" class="px-8 py-4 bg-gray-800 hover:bg-purple-900 border border-purple-700 rounded-lg transition-all">
-            Ir al Arte (@ART)
-        </a>
+    <a
+      href="https://art.franklovelace.dev"
+      target="_blank"
+      class="absolute inset-0 w-full h-full group clip-path-art z-10"
+      @mouseenter="hoverSide = 'art'"
+      @mouseleave="hoverSide = 'none'"
+    >
+      <div class="absolute inset-0 overflow-hidden bg-gray-900">
+        <img
+          :src="artImage"
+          alt="Artistic Side"
+          class="w-full h-full object-cover transition-all duration-700 ease-in-out filter grayscale group-hover:grayscale-0 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+        />
       </div>
 
-      <div class="mt-12">
-        <RouterLink to="/" class="text-gray-500 hover:text-white underline">Volver al espacio</RouterLink>
+      <div class="absolute top-[20%] right-[15%] text-right pointer-events-none">
+        <h2 class="text-7xl md:text-9xl font-bold text-transparent text-stroke-white group-hover:text-purple-500 transition-colors duration-500">
+          ART
+        </h2>
+        <p class="text-white font-mono tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-x-10 group-hover:translate-x-0">
+          LITERATURA & CREATIVIDAD
+        </p>
       </div>
+    </a>
+
+    <a
+      href="https://me.franklovelace.dev"
+      target="_blank"
+      class="absolute inset-0 w-full h-full group clip-path-me z-10"
+      @mouseenter="hoverSide = 'me'"
+      @mouseleave="hoverSide = 'none'"
+    >
+      <div class="absolute inset-0 overflow-hidden bg-gray-900">
+        <img
+          :src="meImage"
+          alt="Professional Side"
+          class="w-full h-full object-cover transition-all duration-700 ease-in-out filter grayscale group-hover:grayscale-0 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+        />
+      </div>
+
+      <div class="absolute bottom-[20%] left-[10%] pointer-events-none">
+        <h2 class="text-7xl md:text-9xl font-bold text-transparent text-stroke-white group-hover:text-cyan-500 transition-colors duration-500">
+          ME
+        </h2>
+        <p class="text-white font-mono tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -translate-x-10 group-hover:translate-x-0">
+          BLOG PERSONAL & VIDA
+        </p>
+      </div>
+    </a>
+    <div class="absolute inset-0 pointer-events-none z-20">
+        <svg class="w-full h-full" preserveAspectRatio="none">
+            <line x1="0" y1="0" x2="100%" y2="100%" stroke="white" stroke-width="2" class="opacity-20" />
+        </svg>
     </div>
+
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+      <RouterLink
+        to="/"
+        class="group/btn relative flex items-center justify-center w-20 h-20 bg-black border-2 border-white rounded-full hover:scale-110 hover:border-cyan-400 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.8)]"
+      >
+        <svg
+          class="w-8 h-8 text-white group-hover/btn:text-cyan-400 transition-colors transform group-hover/btn:-rotate-90 duration-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+        </svg>
+
+        <span class="absolute -bottom-8 text-xs font-bold text-white opacity-0 group-hover/btn:opacity-100 transition-opacity whitespace-nowrap">
+          VOLVER
+        </span>
+      </RouterLink>
+    </div>
+
   </div>
 </template>
+
+<style scoped>
+
+.clip-path-art {
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+
+.clip-path-me {
+
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.text-stroke-white {
+  -webkit-text-stroke: 2px white;
+  color: transparent;
+}
+</style>
