@@ -175,20 +175,30 @@ const openPdf = (link: string) => {
             <h3 class="text-2xl font-bold text-white mb-2">Laberintos Praderas</h3>
             <p class="text-gray-400 text-sm">Una plataforma diseñada para conectar de forma clara y profesional con sus clientes. El sitio centraliza la oferta de servicios y muestra la trayectoria de éxito con marcas líderes, facilitando la comunicación y proyectando una imagen sólida y confiable en el mercado digital. Es la ventana principal hacia una calidad y compromiso en cada proyecto</p>
             <div class="mt-4 flex gap-2">
-              <span class="text-xs py-1 px-2 rounded-full bg-blue-900/50 text-blue-200 border border-blue-700">Vue.js</span>
-              <span class="text-xs py-1 px-2 rounded-full bg-yellow-900/50 text-blue-200 border border-yellow-700">Typescript</span>
-              <span class="text-xs py-1 px-2 rounded-full bg-green-900/50 text-blue-200 border border-green-700">Vite</span>
+              <span class="text-xs py-1 px-2 rounded-full bg-green-900/50 text-green-200 border border-green-700">Vue.js</span>
+              <span class="text-xs py-1 px-2 rounded-full bg-blue-900/50 text-blue-200 border border-blue-700">Typescript</span>
+              <span class="text-xs py-1 px-2 rounded-full bg-green-900/50 text-green-200 border border-green-700">Vite</span>
             </div>
           </RouterLink>
 
           <RouterLink to="/proyectos" class="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer">
-            <div class="h-40 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-xl mb-4 flex items-center justify-center group-hover:from-emerald-500/30 group-hover:to-teal-500/30 transition-all">
-              <span class="text-4xl">💻</span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Sistema Beta</h3>
-            <p class="text-gray-400 text-sm">Escalabilidad empresarial.</p>
+            <div class="h-40 relative rounded-xl mb-4 overflow-hidden group">
+  <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all"></div>
+
+  <img
+    src="/images/Aurora-icon.png"
+    alt="Imagen"
+    class="relative z-10 h-24 mx-auto mt-8 object-contain"
+  />
+</div>
+            <h3 class="text-2xl font-bold text-white mb-2">Aurora Managment System</h3>
+            <p class="text-gray-400 text-sm">Una plataforma avanzada de gestión de infraestructura diseñada para el monitoreo y control de activos distribuidos en tiempo real. El sistema centraliza la administración de recursos mediante una arquitectura de microservicios, integrando un motor de integridad personalizado para la redacción automática de secretos y validación de datos sensibles. Enfocado en la seguridad proactiva, implementa protocolos de comunicación bidireccional asíncrona y un sistema de control de acceso jerárquico. Es una solución robusta optimizada para entornos de computación en la nube sobre arquitectura ARM64.</p>
             <div class="mt-4 flex gap-2">
-              <span class="text-xs py-1 px-2 rounded-full bg-emerald-900/50 text-emerald-200 border border-emerald-700">.NET</span>
+              <span class="text-xs py-1 px-2 rounded-full bg-emerald-900/50 text-emerald-200 border border-emerald-700">.NET 8</span>
+                            <span class="text-xs py-1 px-2 rounded-full bg-blue-900/50 text-blue-200 border border-blue-700">Vue.js</span>
+                                          <span class="text-xs py-1 px-2 rounded-full bg-cyan-900/50 text-cyan-200 border border-cyan-700">Docker</span>
+                                                        <span class="text-xs py-1 px-2 rounded-full bg-red-900/50 text-red-200 border border-red-700">Java 21</span>
+                                                                      <span class="text-xs py-1 px-2 rounded-full bg-emerald-900/50 text-emerald-200 border border-emerald-700">ARM64</span>
             </div>
           </RouterLink>
 
