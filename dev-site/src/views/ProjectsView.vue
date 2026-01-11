@@ -112,11 +112,21 @@ const closeModal = () => {
         @click="openModal(project)"
         class="group bg-gray-900/40 border border-gray-800 hover:border-gray-600 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col"
         >
-        <div class="h-48 overflow-hidden relative">
-          <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10 opacity-60"></div>
-          <img :src="project.images[0]" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+         <div class="h-48 overflow-hidden relative bg-gray-900">
 
-          <div class="absolute top-2 right-2 z-20">
+          <img
+            :src="project.images[0]"
+            class="absolute inset-0 w-full h-full object-cover blur-lg opacity-60 scale-110 transition-transform duration-500 group-hover:scale-125"
+          />
+
+          <img
+            :src="project.images[0]"
+            class="relative w-full h-full object-contain z-10 p-4 transition-transform duration-500 group-hover:scale-105"
+          />
+
+          <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-transparent to-transparent z-20"></div>
+
+          <div class="absolute top-2 right-2 z-30">
              <span v-if="!project.isPublic" class="bg-black/60 backdrop-blur text-gray-400 text-xs px-2 py-1 rounded border border-gray-700 flex items-center gap-1">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 Privado
