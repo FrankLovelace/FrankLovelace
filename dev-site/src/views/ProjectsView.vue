@@ -45,7 +45,7 @@ interface Project {
 const projects = projectsData as Project[];
 
 // ---INTERFAZ ---
-const activeTab = ref<'featured' | 'all'>('featured');
+const activeTab = ref<'featured' | 'all'>('all');
 const selectedProject = ref<Project | null>(null);
 
 const filteredProjects = computed(() => {
@@ -93,14 +93,7 @@ const closeModal = () => {
       </div>
 
       <div class="flex space-x-6 border-b border-gray-800 pb-2">
-        <button
-          @click="activeTab = 'featured'"
-          class="text-lg font-medium transition-colors relative"
-          :class="activeTab === 'featured' ? 'text-cyan-400' : 'text-gray-500 hover:text-gray-300'"
-        >
-          Destacados
-          <div v-if="activeTab === 'featured'" class="absolute -bottom-2.5 left-0 w-full h-1 bg-cyan-500 rounded-t-full"></div>
-        </button>
+
         <button
           @click="activeTab = 'all'"
           class="text-lg font-medium transition-colors relative"
