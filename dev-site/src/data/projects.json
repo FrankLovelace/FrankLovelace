@@ -68,12 +68,23 @@
   },
   {
     "id": 4,
-    "title": "API Gateway Distribuido",
-    "shortDesc": "Middleware de alto rendimiento...",
-    "fullDescription": "Desarrollo...",
-    "technologies": ["Java 21"],
-    "featured": false,
-    "images": ["..."],
+    "title": "Neural Audio Pipeline & Broadcasting",
+    "shortDesc": "Síntesis de audio mediante IA (Demucs/Basic Pitch) y sincronización Maestro-Esclavo.",
+    "fullDescription": "Diseño de un sistema de radiodifusión global mediante un pipeline de procesamiento de datos híbrido. En lugar de streaming convencional, implementé un flujo ETL que utiliza Redes Neuronales (Meta's Demucs para aislamiento vocal y Spotify's Basic Pitch para conversión Audio-a-MIDI) para compilar audio analógico en formato binario .NBS optimizado.\n\nEl motor de ejecución (Runtime) opera bajo una arquitectura Maestro-Esclavo: una instancia maestra sincroniza el 'tick' temporal global, mientras que instancias esclavas gestionan el estado individual (volumen) interceptando paquetes antes de enviarlos al cliente. El sistema es Thread-Safe y No-Bloqueante, delegando la lectura de archivos y el despacho masivo de paquetes a hilos asíncronos para proteger el Main Thread del servidor.",
+    "technologies": [
+      "Java",
+      "Python",
+      "Meta Demucs (AI)",
+      "Spotify Basic Pitch (AI)",
+      "Async Programming",
+      "Binary Serialization",
+      "Packet Injection"
+    ],
+    "featured": true,
+    "images": [
+      "https://images.unsplash.com/photo-1478737270239-2f02b77ac6d5?q=80&w=2076&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
+    ],
     "isPublic": false,
     "repoLink": ""
   }
