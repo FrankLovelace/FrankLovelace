@@ -26,25 +26,45 @@
   },
   {
     "id": 2,
-    "title": "Dashboard Analítico",
-    "shortDesc": "Panel de control en tiempo real...",
-    "fullDescription": "Dashboard interactivo...",
-    "technologies": ["Vue.js 3", "TypeScript", "SignalR"],
+    "title": "Infraestructura Distribuida ARM64",
+    "shortDesc": "Red de alta disponibilidad y Zero Trust sobre Oracle Cloud (Ampere).",
+    "fullDescription": "Diseño e implementación de una arquitectura de microservicios aislados para procesamiento de tiempo real en arquitectura ARM64. El sistema se orquesta mediante Docker y un Daemon de control, dividiéndose en tres capas funcionales: Edge (Proxy Velocity), Cómputo (Nodos PaperMC aislados) y Datos (MariaDB). \n\nSe aplicó una estrategia de seguridad 'Security-by-Design' utilizando micro-segmentación de redes Docker (Bridge Network) donde los nodos de cómputo son invisibles al exterior. El plano de gestión está protegido mediante Cloudflare Tunnels (Zero Trust Ingress), eliminando la exposición de puertos de administración. \n\nA nivel de rendimiento, se implementó una estrategia de límites de memoria en cascada (JVM Heap vs Container Hard Limit) y se utilizó el Generational ZGC de Java 21 para lograr pausas de recolección de basura sub-milisegundo en procesadores Ampere. La persistencia se garantiza mediante Bind Mounts y un sistema automatizado de Disaster Recovery (DRP) off-site vía Rclone.",
+    "technologies": [
+      "Docker",
+      "Java 21 (ZGC)",
+      "Oracle Cloud ARM64",
+      "Cloudflare Zero Trust",
+      "Velocity Proxy",
+      "Linux (Bash/Cron)",
+      "MySQL",
+      "Rclone"
+    ],
     "featured": true,
-    "images": ["..."],
-    "isPublic": true,
+    "images": [
+      "projects/AuroraPanel/icon.png"
+    ],
+    "isPublic": false,
     "repoLink": ""
   },
   {
     "id": 3,
-    "title": "Infraestructura Cloud Segura",
-    "shortDesc": "Despliegue automatizado...",
-    "fullDescription": "Configuración...",
-    "technologies": ["Linux", "Docker"],
+    "title": "Refactorización Open Source",
+    "shortDesc": "Migración de codebase legacy a Java 21 y restauración de dependencias.",
+    "fullDescription": "Mantenimiento y modernización de software de código abierto (BetterRTP). El proyecto original presentaba deuda técnica significativa y fallos críticos de compilación debido a repositorios de dependencias deprecados y APIs obsoletas. \n\nEl trabajo consistió en realizar una auditoría del archivo `pom.xml` para eliminar dependencias muertas, migrar el entorno de compilación a Java 21 (LTS) y actualizar la integración con la API de PaperMC para dar soporte a la versión 1.21. Se logró restaurar el ciclo de vida de construcción (Build Lifecycle) permitiendo que la comunidad continúe utilizando la herramienta.",
+    "technologies": [
+      "Java 21",
+      "Maven",
+      "Git Flow",
+      "Paper API",
+      "Open Source",
+      "Refactoring"
+    ],
     "featured": false,
-    "images": ["..."],
-    "isPublic": false,
-    "repoLink": ""
+    "images": [
+      "projects/BetterRTP/logo.png"
+    ],
+    "isPublic": true,
+    "repoLink": "https://github.com/FrankLovelace/BetterRTP-1.21"
   },
   {
     "id": 4,
