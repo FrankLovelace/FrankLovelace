@@ -67,7 +67,28 @@
     "repoLink": "https://github.com/FrankLovelace/BetterRTP-1.21"
   },
   {
-    "id": 4,
+  "id": 5,
+    "title": "Data Science & Predictive Modeling",
+    "shortDesc": "Pipeline ETL, análisis estadístico inferencial y modelos de ML (Supervisado/No Supervisado).",
+    "fullDescription": "Ejecución de un ciclo completo de Minería de Datos enfocado en el análisis de rendimiento de contenido digital. El proceso inició con un ETL riguroso (imputación de nulos, estandarización temporal) e Ingeniería de Características para enriquecer el dataset.\n\nSe aplicó rigor matemático mediante pruebas estadísticas (Shapiro-Wilk, Kruskal-Wallis) confirmando con p < 0.001 la dominancia de la categoría 'Música'. En la fase de modelado, desarrollé una Regresión Lineal (R² 0.66) para predicción de engagement, un clasificador KNN para detección de patrones de categoría y utilicé K-Means (optimizado con el Método del Codo) para segmentar videos en 4 clusters de viralidad. Los hallazgos se comunicaron mediante visualizaciones avanzadas en Seaborn.",
+    "technologies": [
+      "Python",
+      "Pandas",
+      "Scikit-learn",
+      "Matplotlib / Seaborn",
+      "Statistical Analysis",
+      "Jupyter Notebooks"
+    ],
+    "featured": false,
+    "images": [
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1543286386-2e659306cd6c?q=80&w=2070&auto=format&fit=crop"
+    ],
+    "isPublic": true,
+    "repoLink": "https://github.com/FrankLovelace/Data-mining"
+  },
+  {
+    "id": 5,
     "title": "Neural Audio Pipeline & Broadcasting",
     "shortDesc": "Síntesis de audio mediante IA (Demucs/Basic Pitch) y sincronización Maestro-Esclavo.",
     "fullDescription": "Diseño de un sistema de radiodifusión global mediante un pipeline de procesamiento de datos híbrido. En lugar de streaming convencional, implementé un flujo ETL que utiliza Redes Neuronales (Meta's Demucs para aislamiento vocal y Spotify's Basic Pitch para conversión Audio-a-MIDI) para compilar audio analógico en formato binario .NBS optimizado.\n\nEl motor de ejecución (Runtime) opera bajo una arquitectura Maestro-Esclavo: una instancia maestra sincroniza el 'tick' temporal global, mientras que instancias esclavas gestionan el estado individual (volumen) interceptando paquetes antes de enviarlos al cliente. El sistema es Thread-Safe y No-Bloqueante, delegando la lectura de archivos y el despacho masivo de paquetes a hilos asíncronos para proteger el Main Thread del servidor.",
