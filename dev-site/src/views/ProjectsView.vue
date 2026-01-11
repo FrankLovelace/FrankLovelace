@@ -54,6 +54,8 @@ const closeModal = () => {
 };
 </script>
 
+
+
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
