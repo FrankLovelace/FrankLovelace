@@ -1,29 +1,30 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { RouterLink } from 'vue-router';
-</script>
 
-<template>
-  <div class="min-h-screen bg-black text-white p-8">
-    <nav class="mb-8">
-      <RouterLink to="/" class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Volver al Inicio
-      </RouterLink>
-    </nav>
+const getTechStyle = (tech: string) => {
+  const t = tech.toLowerCase();
 
-    <h1 class="text-4xl font-bold mb-4">Galaxia Completa de Proyectos</h1>
-    <p>Aquí irá la lista detallada de todos mis trabajos.</p>
+  // GRUPO 1: CLOUD & DEVOPS
+  if (t.includes('azure') || t.includes('docker') || t.includes('github') || t.includes('nginx') || t.includes('linux') || t.includes('ubuntu') || t.includes('cloudflare') || t.includes('devops')) {
+    return 'bg-orange-900/50 text-orange-200 border-orange-700';
+  }
 
-    <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="h-64 bg-gray-900 rounded-lg border border-gray-800 flex items-center justify-center">
-            <span class="text-gray-600">Espacio para Proyecto 1</span>
-        </div>
-        <div class="h-64 bg-gray-900 rounded-lg border border-gray-800 flex items-center justify-center">
-            <span class="text-gray-600">Espacio para Proyecto 2</span>
-        </div>
-        <div class="h-64 bg-gray-900 rounded-lg border border-gray-800 flex items-center justify-center">
-            <span class="text-gray-600">Espacio para Proyecto 3</span>
-        </div>
-    </div>
-  </div>
-</template>
+  // GRUPO 2: DATA & SECURITY
+  if (t.includes('sql') || t.includes('data') || t.includes('jwt') || t.includes('auth') || t.includes('identity') || t.includes('rbac') || t.includes('ssh') || t.includes('security')) {
+    return 'bg-purple-900/50 text-purple-200 border-purple-700';
+  }
+
+  // GRUPO 3: FRONTEND & UX
+  if (t.includes('vue') || t.includes('script') || t.includes('js') || t.includes('tailwind') || t.includes('vite') || t.includes('pinia') || t.includes('apex') || t.includes('signalr') || t.includes('front')) {
+    return 'bg-emerald-900/50 text-emerald-200 border-emerald-700';
+  }
+
+  //BACKEND & LOGIC
+  if (t.includes('c#') || t.includes('.net') || t.includes('java') || t.includes('entity') || t.includes('blazor') || t.includes('linq') || t.includes('rest') || t.includes('velocity') || t.includes('papermc') || t.includes('back')) {
+    return 'bg-blue-900/50 text-blue-200 border-blue-700';
+  }
+
+  // Default
+  return 'bg-gray-800 text-gray-300 border-gray-600';
+};
