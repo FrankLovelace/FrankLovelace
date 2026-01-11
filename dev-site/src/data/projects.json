@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "title": "Datos falsos de pruebaSistema ERP Corporativo",
+    "shortDesc": "Plataforma de gestión de recursos empresariales escalable.",
+    "fullDescription": "Solución integral para la administración de inventarios y recursos humanos. Implementa una arquitectura de microservicios utilizando .NET 8 para el backend y comunicación asíncrona mediante RabbitMQ. El frontend permite visualización de datos en tiempo real.",
+    "technologies": [".NET 8", "C#", "SQL Server", "Blazor", "Azure", "Docker"],
+    "featured": true,
+    "images": [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2070&auto=format&fit=crop"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Dashboard Analítico",
+    "shortDesc": "Panel de control en tiempo real con WebSockets.",
+    "fullDescription": "Dashboard interactivo diseñado para monitorear métricas de servidores. Utiliza SignalR para transmisión de datos bidireccional y ApexCharts para renderizar gráficas de alto rendimiento. Optimizado para entornos de alta concurrencia.",
+    "technologies": ["Vue.js 3", "TypeScript", "ApexCharts", "SignalR", "Tailwind CSS"],
+    "featured": true,
+    "images": [
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?q=80&w=2076&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1599658880436-c61792e70672?q=80&w=2070&auto=format&fit=crop"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Infraestructura Cloud Segura",
+    "shortDesc": "Despliegue automatizado y seguridad perimetral.",
+    "fullDescription": "Configuración de entorno de producción en Linux. Implementación de políticas de seguridad Zero Trust mediante Cloudflare Tunnels. Orquestación de contenedores con Docker Compose y gestión de proxy reverso con Nginx.",
+    "technologies": ["Linux", "Docker", "Nginx", "Cloudflare Tunnels", "Bash"],
+    "featured": false,
+    "images": [
+      "https://images.unsplash.com/photo-1667372393119-c81c0cda71cd?q=80&w=1932&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1607799275518-d58665d096b1?q=80&w=1664&auto=format&fit=crop"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "API Gateway Distribuido",
+    "shortDesc": "Middleware de alto rendimiento para microservicios.",
+    "fullDescription": "Desarrollo de un gateway centralizado en Java 21 para gestionar el tráfico entre múltiples instancias de servicios. Implementa autenticación JWT centralizada y rate limiting para proteger la infraestructura subyacente.",
+    "technologies": ["Java 21", "MySQL", "JWT Auth", "RESTful APIs"],
+    "featured": false,
+    "images": [
+       "https://images.unsplash.com/photo-1612287230217-9694659e5636?q=80&w=1000&auto=format&fit=crop"
+    ]
+  }
+]

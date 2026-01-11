@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import projectsData from '@/data/projects.json';
 
 const getTechStyle = (tech: string) => {
   const t = tech.toLowerCase();
@@ -28,3 +29,16 @@ const getTechStyle = (tech: string) => {
   // Default
   return 'bg-gray-800 text-gray-300 border-gray-600';
 };
+
+const projects = projectsData;
+
+// ---INTERFAZ ---
+const activeTab = ref<'featured' | 'all'>('featured');
+const selectedProject = ref<any>(null);
+
+const filteredProjects = computed(() => {
+  if (activeTab.value === 'featured') {
+    return projects.filter((p: any) => p.featured);
+  }
+  return projects;
+});
