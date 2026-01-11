@@ -30,20 +30,32 @@ const getTechStyle = (tech: string) => {
   return 'bg-gray-800 text-gray-300 border-gray-600';
 };
 
-const projects = projectsData;
+interface Project {
+  id: string | number;
+  title: string;
+  shortDesc: string;
+  fullDescription: string;
+  images: string[];
+  technologies: string[];
+  isPublic: boolean;
+  featured: boolean;
+  repoLink?: string;
+}
+
+const projects = projectsData as Project[];
 
 // ---INTERFAZ ---
 const activeTab = ref<'featured' | 'all'>('featured');
-const selectedProject = ref<any>(null);
+const selectedProject = ref<Project | null>(null);
 
 const filteredProjects = computed(() => {
   if (activeTab.value === 'featured') {
-    return projects.filter((p: any) => p.featured);
+    return projects.filter((p) => p.featured);
   }
   return projects;
 });
 
-const openModal = (project: any) => {
+const openModal = (project: Project) => {
   selectedProject.value = project;
   document.body.style.overflow = 'hidden';
 };
@@ -130,7 +142,7 @@ const closeModal = () => {
               v-for="tech in project.technologies.slice(0, 3)"
               :key="tech"
               class="w-3 h-3 rounded-full"
-              :class="getTechStyle(tech).split(' ')[0].replace('/50', '')"
+              :class="getTechStyle(tech).split(' ')[0]?.replace('/50', '')"
               :title="tech"
             ></span>
             <span v-if="project.technologies.length > 3" class="text-xs text-gray-600 self-center">+{{ project.technologies.length - 3 }}</span>
