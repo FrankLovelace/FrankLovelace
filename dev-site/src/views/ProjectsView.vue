@@ -89,7 +89,7 @@ const closeModal = () => {
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           Volver al Inicio
         </RouterLink>
-        <h1 class="text-4xl md:text-5xl font-bold">Galaxia de Proyectos</h1>
+        <h1 class="text-4xl md:text-5xl font-bold">Mis Proyectos</h1>
       </div>
 
       <div class="flex space-x-6 border-b border-gray-800 pb-2">
