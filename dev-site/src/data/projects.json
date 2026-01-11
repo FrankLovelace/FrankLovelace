@@ -1,13 +1,27 @@
 [
   {
     "id": 1,
-    "title": "Sistema ERP Corporativo",
-    "shortDesc": "Plataforma de gestión de recursos empresariales escalable.",
-    "fullDescription": "Solución integral...",
-    "technologies": [".NET 8", "C#", "SQL Server", "Blazor", "Azure", "Docker"],
+    "title": "Plataforma Corporativa B2B",
+    "shortDesc": "Arquitectura híbrida: Vue.js (Público) y Blazor (Admin) sobre .NET 8.",
+    "fullDescription": "Desarrollo de un ecosistema digital para la gestión de portafolio B2B. La arquitectura se desacopló en dos frontends consumiendo una API RESTful común en .NET 8: un portal público en Vue.js + Tailwind optimizado para la captación de clientes, y un panel administrativo en Blazor Server para la gestión segura de datos (CRUD Proyectos/Clientes). \n\nSe implementaron optimizaciones de rendimiento críticas en el cliente público, incluyendo Lazy Loading nativo y un sistema de Paginación Infinita personalizado mediante IntersectionObserver para reducir la carga inicial del servidor. La infraestructura se gestiona en Azure Web Apps con despliegues automatizados vía GitHub Actions.",
+    "technologies": [
+      ".NET 8",
+      "C#",
+      "Blazor",
+      "Vue.js",
+      "Tailwind CSS",
+      "SQL Server",
+      "Entity Framework",
+      "Azure",
+      "GitHub Actions"
+    ],
     "featured": true,
-    "images": ["..."],
-    "isPublic": true,
+    "images": [
+        "projects/Laberintos/logo.png",
+        "projects/Laberintos/cliente.jpeg",
+        "projects/Laberintos/proyectos.jpeg"
+    ],
+    "isPublic": false,
     "repoLink": ""
   },
   {
