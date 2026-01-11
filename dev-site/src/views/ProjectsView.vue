@@ -155,7 +155,7 @@ const closeModal = () => {
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
 
-          <div class="w-full md:w-3/5 bg-black p-4 grid gap-2 overflow-hidden"
+           <div class="w-full md:w-3/5 bg-black p-4 grid gap-2 overflow-hidden"
                :class="{
                  'grid-cols-1': selectedProject.images.length === 1,
                  'grid-cols-2': selectedProject.images.length === 2,
@@ -163,29 +163,42 @@ const closeModal = () => {
                  'grid-cols-4': selectedProject.images.length === 4
                }">
 
-            <img v-if="selectedProject.images.length === 1"
-                 :src="selectedProject.images[0]" class="w-full h-full object-cover rounded-lg col-span-1 aspect-video" />
+            <div v-if="selectedProject.images.length === 1" class="relative w-full h-full col-span-1 min-h-[300px] overflow-hidden rounded-lg bg-gray-900">
+                <img :src="selectedProject.images[0]" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110" />
+                <img :src="selectedProject.images[0]" class="relative w-full h-full object-contain z-10 shadow-lg" />
+            </div>
 
             <template v-if="selectedProject.images.length === 2">
-                <img :src="selectedProject.images[0]" class="w-full h-full object-cover rounded-lg col-span-1" />
-                <img :src="selectedProject.images[1]" class="w-full h-full object-cover rounded-lg col-span-1" />
+                <div v-for="(img, index) in selectedProject.images" :key="index" class="relative w-full h-full col-span-1 overflow-hidden rounded-lg bg-gray-900">
+                    <img :src="img" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110" />
+                    <img :src="img" class="relative w-full h-full object-contain z-10" />
+                </div>
             </template>
 
             <template v-if="selectedProject.images.length === 3">
                 <div class="col-span-1 flex flex-col gap-2">
-                    <img :src="selectedProject.images[1]" class="w-full h-1/2 object-cover rounded-lg" />
-                    <img :src="selectedProject.images[2]" class="w-full h-1/2 object-cover rounded-lg" />
+                    <div v-for="i in [1, 2]" :key="i" class="relative w-full h-1/2 overflow-hidden rounded-lg bg-gray-900">
+                        <img :src="selectedProject.images[i]" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110" />
+                        <img :src="selectedProject.images[i]" class="relative w-full h-full object-contain z-10" />
+                    </div>
                 </div>
-                <img :src="selectedProject.images[0]" class="col-span-2 w-full h-full object-cover rounded-lg" />
+                <div class="relative w-full h-full col-span-2 overflow-hidden rounded-lg bg-gray-900">
+                    <img :src="selectedProject.images[0]" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110" />
+                    <img :src="selectedProject.images[0]" class="relative w-full h-full object-contain z-10" />
+                </div>
             </template>
 
             <template v-if="selectedProject.images.length === 4">
                  <div class="col-span-1 flex flex-col gap-2">
-                    <img :src="selectedProject.images[1]" class="w-full h-1/3 object-cover rounded-lg" />
-                    <img :src="selectedProject.images[2]" class="w-full h-1/3 object-cover rounded-lg" />
-                    <img :src="selectedProject.images[3]" class="w-full h-1/3 object-cover rounded-lg" />
+                    <div v-for="i in [1, 2, 3]" :key="i" class="relative w-full h-1/3 overflow-hidden rounded-lg bg-gray-900">
+                        <img :src="selectedProject.images[i]" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110" />
+                        <img :src="selectedProject.images[i]" class="relative w-full h-full object-contain z-10" />
+                    </div>
                 </div>
-                <img :src="selectedProject.images[0]" class="col-span-3 w-full h-full object-cover rounded-lg" />
+                <div class="relative w-full h-full col-span-3 overflow-hidden rounded-lg bg-gray-900">
+                    <img :src="selectedProject.images[0]" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-50 scale-110" />
+                    <img :src="selectedProject.images[0]" class="relative w-full h-full object-contain z-10" />
+                </div>
             </template>
 
           </div>
