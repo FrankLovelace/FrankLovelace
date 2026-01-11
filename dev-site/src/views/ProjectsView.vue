@@ -42,3 +42,14 @@ const filteredProjects = computed(() => {
   }
   return projects;
 });
+
+const openModal = (project: any) => {
+  selectedProject.value = project;
+  document.body.style.overflow = 'hidden';
+};
+
+const closeModal = () => {
+  selectedProject.value = null;
+  document.body.style.overflow = 'auto';
+};
+</script>
