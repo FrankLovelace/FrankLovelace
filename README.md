@@ -31,7 +31,7 @@ I approach software engineering with a diverse toolkit, selecting the right tech
 
 ## Featured
 
-###  [Corporate B2B Platform](https://franklovelace.dev/proyectos)
+###  [Corporate B2B Platform](http://franklovelace.dev/proyectos)
 > *Hybrid Architecture .NET 8 + Vue.js*
 A decoupled ecosystem featuring a public-facing portal (Vue.js) and a secure administrative panel (Blazor Server). Optimized with custom **IntersectionObserver** infinite scrolling and Lazy Loading. Deployed on Azure Web Apps via GitHub Actions.
 
