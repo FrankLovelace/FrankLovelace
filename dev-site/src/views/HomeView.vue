@@ -76,14 +76,14 @@ const certificates = [
     title: "Red Hat System Administration I ",
     subtitle: "Red Hat (RH124-RHA V9.3)",
     icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Red_Hat_logo.svg/1200px-Red_Hat_logo.svg.png",
-    pdfLink: "/certs/FranciscoGallegos_SysAdmin I.pdf"
+    pdfLink: "/certs/rhcsa-1.pdf"
   },
   {
     id: 2,
     title: "Red Hat System Administration II",
     subtitle: "Red Hat (RH134-RHCA V9.3)",
     icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Red_Hat_logo.svg/1200px-Red_Hat_logo.svg.png",
-    pdfLink: "/certs/FranciscoGallegos_SysAdmin II.pdf"
+    pdfLink: "/certs/rhcsa-2.pdf"
   }
 ];
 
