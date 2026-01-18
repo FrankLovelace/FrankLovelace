@@ -1,0 +1,149 @@
+---
+import { getCollection } from 'astro:content';
+import NewspaperLayout from '../../layouts/NewspaperLayout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}));
+}
+
+const post = Astro.props;
+const { Content } = await post.render();
+
+const formatDate = (date: Date) => {
+    return date.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+};
+---
+
+<NewspaperLayout>
+    
+    <article class="inner-page">
+        
+        <header class="article-header">
+            <div class="breadcrumbs">
+                <a href="/">Portada</a> &gt; <span>{post.data.category}</span>
+            </div>
+            
+            <h1 class="headline">{post.data.title}</h1>
+            
+            <div class="meta-line">
+                <span class="author">Por <strong>Frank Lovelace</strong></span>
+                <span class="date">{formatDate(post.data.pubDate)}</span>
+            </div>
+            
+            <hr class="double-line">
+        </header>
+
+        <div class="article-content">
+            {post.data.heroImage && (
+                <div class="hero-image">
+                    <img src={post.data.heroImage} alt="" />
+                </div>
+            )}
+            
+            <Content /> 
+        </div>
+
+        <footer class="article-footer">
+            <a href="/" class="back-btn">← Volver a la Portada</a>
+        </footer>
+
+    </article>
+
+</NewspaperLayout>
+
+<style>
+    a {
+        color: #1a1a1a !important; 
+        text-decoration: none;
+        font-weight: 900; 
+        border-bottom: 2px solid transparent; 
+        transition: border-color 0.3s ease;
+    }
+
+    a:hover {
+        border-bottom: 2px solid #1a1a1a; 
+    }
+
+    .article-link {
+        font-weight: inherit; 
+    }
+    .inner-page {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px 0;
+    }
+
+    .breadcrumbs {
+        font-family: sans-serif;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .headline {
+        font-family: 'Cinzel', serif;
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+
+    .meta-line {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        font-size: 1.1rem;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .double-line {
+        border: 0;
+        border-top: 3px double #1a1a1a;
+        margin-bottom: 30px;
+    }
+
+    .article-content {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        text-align: justify;
+    }
+
+    .hero-image img {
+        width: 100%;
+        height: auto;
+        filter: grayscale(100%) contrast(110%);
+        border: 1px solid #1a1a1a;
+        padding: 5px;
+        margin-bottom: 30px;
+    }
+
+    .article-footer {
+        margin-top: 50px;
+        text-align: center;
+        font-family: 'Cinzel', serif;
+        border-top: 1px solid #1a1a1a;
+        padding-top: 20px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    :global(.article-content p) { margin-bottom: 20px; }
+    :global(.article-content h2) { font-family: 'Cinzel', serif; margin-top: 30px; font-weight: bold; }
+    :global(.article-content blockquote) { 
+        border-left: 4px solid #1a1a1a; 
+        padding-left: 20px; 
+        font-style: italic; 
+        margin: 20px 0;
+    }
+</style>
