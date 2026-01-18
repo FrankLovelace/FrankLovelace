@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import NewspaperLayout from '../../layouts/NewspaperLayout.astro';
-
+import { Image } from 'astro:assets';
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
 	return posts.map((post) => ({
@@ -39,10 +39,10 @@ const formatDate = (date: Date) => {
 
         <div class="article-content">
             {post.data.heroImage && (
-                <div class="hero-image">
-                    <img src={post.data.heroImage} alt="" />
-                </div>
-            )}
+    <div class="image-container">
+        <Image src={post.data.heroImage} alt={post.data.title} class="magic-photo" />
+    </div>
+)}
             
             <Content /> 
         </div>
