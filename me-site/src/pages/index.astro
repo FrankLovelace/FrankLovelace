@@ -31,7 +31,7 @@ const formatDate = (date: Date) => {
             
             {latestPost.data.heroImage && (
                 <div class="image-container">
-                    <img src={latestPost.data.heroImage} alt={latestPost.data.title} class="magic-photo" />
+                    <img src={latestPost.data.heroImage.src} alt={latestPost.data.title} class="magic-photo" />
                     <figcaption>Fig 1. {latestPost.data.category}</figcaption>
                 </div>
             )}
