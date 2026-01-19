@@ -9,7 +9,7 @@ const personajes = defineCollection({
 		edad: z.number().optional(),
 		descripcion: z.string(), 
 		avatar: z.string().optional(), 
-        estado: z.enum(['Principal', 'Secundario', 'Sin Apariciones']).default('Principal'),
+        tipo: z.enum(['Principal', 'Secundario', 'Sin Apariciones']).default('Principal'),
 	}),
 });
 
