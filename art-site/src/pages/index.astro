@@ -1,1 +1,80 @@
-//xd
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const cards = [ //fotos temporales xd 
+    {
+        title: "LIDERAZGO",
+        subtitle: "Lorem ipsum dolor sit amet",
+        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop", 
+        color: "bg-blue-600"
+    },
+    {
+        title: "INTELECTO",
+        subtitle: "Lorem ipsum dolor sit amet",
+        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop", 
+        color: "bg-cyan-600"
+    },
+    {
+        title: "TRADICIÓN",
+        subtitle: "Lorem ipsum dolor sit amet",
+        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop", 
+        color: "bg-indigo-600"
+    },
+    {
+        title: "ORDEN",
+        subtitle: "Lorem ipsum dolor sit amet",
+        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop", 
+        color: "bg-sky-600"
+    }
+];
+---
+
+<MainLayout>
+
+    <section class="text-center py-20 px-6">
+        <h1 class="text-5xl md:text-6xl font-normal text-gray-900 mb-4 tracking-tight">
+            Los jóvenes del futuro
+        </h1>
+        <div class="w-16 h-1 bg-linear-to-r from-blue-500 to-cyan-400 mx-auto rounded-full mb-6"></div>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+            Descubre a los herederos que llevarán a Hormenia hacia una nueva era de luz y progreso. 
+            <span class="block text-sm mt-2 text-blue-600 font-bold uppercase tracking-widest">Lorem ipsum</span>
+        </p>
+    </section>
+
+    <section class="max-w-400 mx-auto px-4 pb-20">
+        <div class="flex flex-col md:flex-row gap-2 h-200 md:h-150">
+            
+            {cards.map((card) => (
+                <div class="relative flex-1 hover:flex-3 transition-all duration-700 ease-in-out cursor-pointer group overflow-hidden rounded-2xl">
+                    
+                    <img 
+                        src={card.img} 
+                        alt={card.title} 
+                        class="absolute inset-0 w-full h-full object-cover filter brightness-[0.8] group-hover:brightness-100 transition-all duration-700"
+                    />
+                    <div class="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-black/80 opacity-60 group-hover:opacity-90 transition-opacity duration-500"></div>
+
+                    <div class="absolute bottom-0 left-0 w-full p-8 md:p-10 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        
+                        <h2 class="text-4xl md:text-6xl font-bold text-white mb-2 opacity-90 group-hover:opacity-100">
+                            {card.title}
+                        </h2>
+                        
+                        <div class="h-0 group-hover:h-auto overflow-hidden transition-all duration-500">
+                            <p class="text-lg text-gray-200 font-medium translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                                {card.subtitle}
+                            </p>
+                            <span class="inline-block mt-4 text-xs bg-white text-black px-4 py-2 rounded-full font-bold uppercase tracking-wider">
+                                Explorar
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            ))}
+
+        </div>
+    </section>
+
+</MainLayout>
