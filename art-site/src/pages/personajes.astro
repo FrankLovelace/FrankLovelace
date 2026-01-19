@@ -3,7 +3,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import { getCollection } from 'astro:content';
 
 const personajes = await getCollection('personajes');
-const getImagePath = (slug: string) => `/personajes/${slug}.webp`;
+const getImagePath = (id: string) => `/personajes/${id}.webp`;
 const placeholderImg = "https://placehold.co/600x600/e2e8f0/475569?text=Sin+Imagen";
 ---
 <MainLayout>
@@ -23,12 +23,12 @@ const placeholderImg = "https://placehold.co/600x600/e2e8f0/475569?text=Sin+Imag
                         alias: p.data.alias || 'Desconocido',
                         colorHex: p.data.colorHex,
                         descripcion: p.data.descripcion,
-                        img: getImagePath(p.slug) 
+                        img: getImagePath(p.id) 
                     }).replace(/"/g, "&quot;")}')`} 
                 >
                     <div class="relative rounded-2xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         <img 
-                            src={getImagePath(p.slug)} 
+                            src={getImagePath(p.id)} 
                             alt={p.data.nombre}
                             class="w-full h-auto object-cover"
                             onerror={`this.src='${placeholderImg}'`}
@@ -48,3 +48,4 @@ const placeholderImg = "https://placehold.co/600x600/e2e8f0/475569?text=Sin+Imag
         </div>
 
     </div>
+    
