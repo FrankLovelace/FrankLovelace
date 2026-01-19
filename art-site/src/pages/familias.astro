@@ -1,0 +1,225 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const familiasData = await getCollection('familias' as any);
+
+const getFamilyImage = (filename: string) => {
+    const extensions = ['webp', 'png', 'jpg', 'jpeg', 'svg'];
+    for (const ext of extensions) {
+        const filePath = path.join(process.cwd(), 'public', 'familias', `${filename}.${ext}`);
+        if (fs.existsSync(filePath)) return `/familias/${filename}.${ext}`;
+    }
+    return "https://placehold.co/400x400/1e1e1e/FFF?text=Escudo";
+};
+
+const layoutMap: Record<number, any> = {
+    1: { top: '15%', left: '15%', lineType: 'zigzag', label: 'Noroeste' },
+    2: { top: '50%', left: '10%', lineType: 'dotted', label: 'Oeste' },
+    3: { top: '85%', left: '20%', lineType: 'straight', label: 'Suroeste' },
+    4: { top: '85%', left: '80%', lineType: 'curve-s', label: 'Sureste' },
+    5: { top: '15%', left: '85%', lineType: 'spikes', label: 'Noreste' },
+    6: { top: '50%', left: '90%', lineType: 'double', label: 'Este' },
+    7: { top: '10%', left: '50%', lineType: 'wavy', label: 'Norte' }
+};
+
+const svgPaths: Record<number, string> = {
+    1: "M 50 50 L 35 35 L 35 25 L 20 25 L 15 15", 
+    2: "M 50 50 Q 30 50 10 50", 
+    3: "M 50 50 L 20 85", 
+    4: "M 50 50 C 50 70, 80 60, 80 85", 
+    5: "M 50 50 L 60 40 L 70 60 L 80 30 L 85 15", 
+    6: "M 50 50 L 90 50", 
+    7: "M 50 50 Q 40 30 50 10", 
+};
+
+---
+
+<MainLayout>
+
+    <div class="min-h-screen bg-gray-50 overflow-hidden relative flex items-center justify-center py-20">
+        
+        <h1 class="absolute top-24 left-0 w-full text-center text-[10vw] font-bold text-gray-200 pointer-events-none select-none z-0">
+            LAS 7 FAMILIAS
+        </h1>
+
+        <div class="relative w-full max-w-5xl aspect-square md:aspect-[16/9] z-10 scale-90 md:scale-100">
+
+            <svg class="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+ 
+                {familiasData.map((f: any) => {
+                    const pos = layoutMap[f.data.id];
+                    const pathD = svgPaths[f.data.id];
+                    if(!pos) return null;
+
+                    return (
+                        <path 
+                            d={pathD} 
+                            fill="none" 
+                            stroke={f.data.colorHex} 
+                            stroke-width="0.3"
+                            stroke-dasharray={pos.lineType === 'dotted' ? '1, 1' : 'none'}
+                            class="opacity-50"
+                        />
+                    );
+                })}
+            </svg>
+
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 w-32 h-32 md:w-40 md:h-40 bg-white rounded-full shadow-[0_0_40px_rgba(0,0,0,0.1)] border-4 border-gray-900 flex items-center justify-center group cursor-default">
+                <div class="text-center">
+                    <span class="block font-bold text-2xl tracking-tighter">HORMENIA</span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">Nexus Central</span>
+                </div>
+                <div class="absolute inset-0 rounded-full border border-gray-200 animate-ping opacity-20"></div>
+            </div>
+
+            {familiasData.map((f: any) => {
+                const pos = layoutMap[f.data.id];
+                const img = getFamilyImage(f.id); 
+                
+                const modalData = {
+                    nombre: f.data.nombre,
+                    lema: f.data.lema,
+                    especialidad: f.data.especialidad,
+                    descripcion: f.data.descripcion,
+                    color: f.data.colorHex,
+                    img: img,
+                    fundador: f.data.fundador || 'Desconocido'
+                };
+
+                if (!pos) return null; 
+
+                return (
+                    <div 
+                        class="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group family-node"
+                        style={`top: ${pos.top}; left: ${pos.left};`}
+                        data-family={JSON.stringify(modalData)}
+                    >
+                        <!-- Tarjeta Flotante -->
+                        <div class="relative w-24 h-24 md:w-32 md:h-32 bg-white rounded-full border-2 shadow-lg hover:scale-110 transition-all duration-300 flex items-center justify-center overflow-hidden z-20"
+                             style={`border-color: ${f.data.colorHex};`}>
+                            
+                            <!-- Logo Familia -->
+                            <img src={img} alt={f.data.nombre} class="w-full h-full object-cover p-2" />
+                            
+                            <!-- Tooltip al hover -->
+                            <div class="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity p-2 text-center">
+                                <span class="text-white text-xs font-bold uppercase">{f.data.nombre}</span>
+                            </div>
+                        </div>
+
+                        <!-- Etiqueta debajo -->
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100 whitespace-nowrap z-30">
+                            <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">{f.data.especialidad}</span>
+                        </div>
+                    </div>
+                );
+            })}
+
+        </div>
+    </div>
+
+    <div id="family-modal" class="fixed inset-0 bg-black/60 z-[150] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4 backdrop-blur-sm">
+        <div id="modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative border-t-8">
+            
+            <button id="close-modal" class="absolute top-4 right-4 p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors z-20">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="relative h-32 bg-gray-50 flex items-center justify-center overflow-hidden">
+                <img id="m-bg-img" src="" class="absolute inset-0 w-full h-full object-cover opacity-10 blur-md grayscale" />
+                <img id="m-logo" src="" class="relative h-20 w-20 object-contain drop-shadow-lg" />
+            </div>
+
+            <div class="p-8 text-center">
+                <h2 id="m-name" class="text-3xl font-bold text-gray-900 mb-1">Nombre Familia</h2>
+                <p id="m-lema" class="text-sm font-serif italic text-gray-500 mb-6">"Lema de la familia"</p>
+
+                <div class="grid grid-cols-2 gap-4 mb-6 text-left bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase block">Especialidad</span>
+                        <span id="m-spec" class="text-sm font-bold text-gray-800">Industria</span>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-gray-400 uppercase block">Fundador</span>
+                        <span id="m-founder" class="text-sm font-bold text-gray-800">Nombre</span>
+                    </div>
+                </div>
+
+                <p id="m-desc" class="text-gray-600 text-sm leading-relaxed text-left">
+                    Descripción detallada...
+                </p>
+
+                <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+                    <button class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors flex items-center gap-2">
+                        Ver Miembros Conocidos
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script is:inline>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('family-modal');
+            const content = document.getElementById('modal-content');
+            const closeBtn = document.getElementById('close-modal');
+
+            const mName = document.getElementById('m-name');
+            const mLema = document.getElementById('m-lema');
+            const mSpec = document.getElementById('m-spec');
+            const mDesc = document.getElementById('m-desc');
+            const mLogo = document.getElementById('m-logo');
+            const mBgImg = document.getElementById('m-bg-img');
+            const mFounder = document.getElementById('m-founder');
+
+            function openModal(data) {
+                mName.innerText = data.nombre;
+                mLema.innerText = `"${data.lema}"`;
+                mSpec.innerText = data.especialidad;
+                mDesc.innerText = data.descripcion;
+                mFounder.innerText = data.fundador;
+                mLogo.src = data.img;
+                mBgImg.src = data.img;
+
+                content.style.borderColor = data.color;
+                mName.style.color = data.color;
+
+                modal.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                });
+            }
+
+            function closeModal() {
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+
+            document.querySelectorAll('.family-node').forEach(node => {
+                node.addEventListener('click', () => {
+                    const data = JSON.parse(node.getAttribute('data-family'));
+                    openModal(data);
+                });
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+        });
+    </script>
+
+</MainLayout>
