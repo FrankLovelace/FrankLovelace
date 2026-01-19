@@ -5,7 +5,7 @@ const menuItems = [
   { 
     name: 'Página principal', 
     href: '/', 
-    inHeader: false,
+    inHeader: false, 
     icon: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>' 
   },
   { 
@@ -50,19 +50,26 @@ const menuItems = [
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-white text-gray-900 pt-16">
+<body class="bg-white text-gray-900">
 
     <nav class="fixed top-0 w-full z-40 bg-white border-b border-gray-200 h-16 px-4 flex items-center justify-between">
+        
         <div class="flex items-center gap-4">
             <button id="menu-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
             </button>
-            <a href="/" class="text-xl font-medium tracking-tight text-gray-700 hover:text-black">Mundo a Color</a>
-        </div>
 
+            <a href="/" class="text-xl font-medium tracking-tight text-gray-700 hover:text-black">
+                Mundo a Color
+            </a>
+        </div>
+        
         <div class="hidden md:flex items-center gap-8 mr-4">
             {menuItems.filter(item => item.inHeader).map(link => (
-                <a href={link.href} class="text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-50 px-3 py-2 rounded-md transition-all relative group">
+                <a 
+                    href={link.href} 
+                    class="text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-50 px-3 py-2 rounded-md transition-all relative group"
+                >
                     {link.name}
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </a>
@@ -73,19 +80,28 @@ const menuItems = [
             <button class="p-2 rounded-full hover:bg-gray-100 text-gray-600">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
-            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm cursor-pointer">F</div>
+            
+            <a href="https://www.instagram.com/franklovegood/" target="_blank" class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 flex items-center justify-center text-white hover:opacity-90 transition-opacity">
+                <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24">
+                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                </svg>
+            </a>
         </div>
     </nav>
 
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
     <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white z-50 transform -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl flex flex-col">
+        
         <div class="h-16 flex items-center px-4 border-b border-gray-100 justify-between">
             <span class="text-xl font-medium text-gray-700 ml-2">Mundo a Color</span>
-            <button id="close-menu" class="p-2 hover:bg-gray-100 rounded-full">
+            <button id="close-menu" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
                 <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
+
         <div class="py-4 overflow-y-auto flex-1">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest px-6 mb-2 block">Explorar</span>
             {menuItems.map(link => (
                 <a href={link.href} class="flex items-center gap-4 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors group">
                     <svg class="w-6 h-6 fill-gray-500 group-hover:fill-blue-600" viewBox="0 0 24 24" set:html={link.icon}></svg>
@@ -93,21 +109,36 @@ const menuItems = [
                 </a>
             ))}
         </div>
+
+        <div class="p-4 bg-gray-50 border-t border-gray-200 mt-auto">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 block">El Autor</span>
+            <div class="flex flex-col gap-2">
+                <a href="https://franklovelace.dev" target="_blank" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-gray-700">
+                    <div class="w-6 h-6 bg-black rounded-full flex items-center justify-center text-white text-[10px] font-bold">FL</div>
+                    <span class="text-sm font-medium">Portafolio Dev</span>
+                </a>
+                <a href="https://me.franklovelace.dev" target="_blank" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white hover:shadow-sm transition-all text-gray-700">
+                    <div class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-[10px] font-bold">ME</div>
+                    <span class="text-sm font-medium">Blog Personal</span>
+                </a>
+            </div>
+        </div>
     </aside>
 
-    <main class="w-full">
+    <div class="pt-16">
         <slot />
-    </main>
+    </div>
 
     <script is:inline>
         const menuBtn = document.getElementById('menu-toggle');
-        const closeBtn = document.getElementById('close-menu');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
+        const closeBtn = document.getElementById('close-menu');
 
         function toggleMenu() {
             if (!sidebar || !overlay) return;
             const isClosed = sidebar.classList.contains('-translate-x-full');
+            
             if (isClosed) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('opacity-0', 'pointer-events-none');
