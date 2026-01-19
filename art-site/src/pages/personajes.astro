@@ -1,0 +1,15 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const personajes = await getCollection('personajes');
+const getImagePath = (slug: string) => `/personajes/${slug}.webp`;
+const placeholderImg = "https://placehold.co/600x600/e2e8f0/475569?text=Sin+Imagen";
+---
+<MainLayout>
+
+    <div class="max-w-[1600px] mx-auto px-6 py-12">
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Personajes</h1>
+            <p class="text-gray-500">Registro oficial de sujetos de interés.</p>
+        </header>
