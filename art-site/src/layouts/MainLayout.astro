@@ -2,42 +2,12 @@
 import '../styles/global.css';
 
 const menuItems = [
-  { 
-    name: 'Página principal', 
-    href: '/', 
-    inHeader: false, 
-    icon: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>' 
-  },
-  { 
-    name: 'Personajes', 
-    href: '/personajes', 
-    inHeader: true, 
-    icon: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>' 
-  },
-  { 
-    name: '7 Familias', 
-    href: '/familias', 
-    inHeader: true, 
-    icon: '<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>' 
-  },
-  { 
-    name: 'Detrás de Hormenia', 
-    href: '/lore', 
-    inHeader: true, 
-    icon: '<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>' 
-  },
-  { 
-    name: 'Cronología', 
-    href: '/cronologia', 
-    inHeader: false, 
-    icon: '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>' 
-  },
-  { 
-    name: 'Mapa Interactivo', 
-    href: '/mapa', 
-    inHeader: false, 
-    icon: '<path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>' 
-  }
+  { name: 'Página principal', href: '/', inHeader: false, icon: '<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>' },
+  { name: 'Personajes', href: '/personajes', inHeader: true, icon: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>' },
+  { name: '7 Familias', href: '/familias', inHeader: true, icon: '<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>' },
+  { name: 'Detrás de Hormenia', href: '/lore', inHeader: true, icon: '<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>' },
+  { name: 'Cronología', href: '/cronologia', inHeader: false, icon: '<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>' },
+  { name: 'Mapa Interactivo', href: '/mapa', inHeader: false, icon: '<path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>' }
 ];
 ---
 
@@ -52,24 +22,21 @@ const menuItems = [
 </head>
 <body class="bg-white text-gray-900">
 
-    <nav class="fixed top-0 w-full z-40 bg-white border-b border-gray-200 h-16 px-4 flex items-center justify-between">
-        
+    <!-- NAV (Z-INDEX 100 PARA ESTAR SIEMPRE ARRIBA) -->
+    <nav class="fixed top-0 w-full z-[100] bg-white border-b border-gray-200 h-16 px-4 flex items-center justify-between shadow-sm">
         <div class="flex items-center gap-4">
-            <button id="menu-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600">
+            <!-- ID MENU-TOGGLE IMPORTANTE -->
+            <button id="menu-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 cursor-pointer">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
             </button>
-
             <a href="/" class="text-xl font-medium tracking-tight text-gray-700 hover:text-black">
                 Mundo a Color
             </a>
         </div>
-        
+
         <div class="hidden md:flex items-center gap-8 mr-4">
             {menuItems.filter(item => item.inHeader).map(link => (
-                <a 
-                    href={link.href} 
-                    class="text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-50 px-3 py-2 rounded-md transition-all relative group"
-                >
+                <a href={link.href} class="text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-50 px-3 py-2 rounded-md transition-all relative group">
                     {link.name}
                     <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                 </a>
@@ -77,31 +44,22 @@ const menuItems = [
         </div>
 
         <div class="flex items-center gap-2">
-            <button class="p-2 rounded-full hover:bg-gray-100 text-gray-600">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </button>
-            
             <a href="https://www.instagram.com/franklovegood/" target="_blank" class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 flex items-center justify-center text-white hover:opacity-90 transition-opacity">
-                <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24">
-                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
-                </svg>
+                <svg class="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
             </a>
         </div>
     </nav>
 
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
-
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white z-50 transform -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl flex flex-col">
-        
+    <!-- SIDEBAR (Z-INDEX 110) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-[105] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white z-[110] transform -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl flex flex-col">
         <div class="h-16 flex items-center px-4 border-b border-gray-100 justify-between">
             <span class="text-xl font-medium text-gray-700 ml-2">Mundo a Color</span>
-            <button id="close-menu" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <button id="close-menu" class="p-2 hover:bg-gray-100 rounded-full">
                 <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
-
         <div class="py-4 overflow-y-auto flex-1">
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest px-6 mb-2 block">Explorar</span>
             {menuItems.map(link => (
                 <a href={link.href} class="flex items-center gap-4 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors group">
                     <svg class="w-6 h-6 fill-gray-500 group-hover:fill-blue-600" viewBox="0 0 24 24" set:html={link.icon}></svg>
@@ -109,7 +67,6 @@ const menuItems = [
                 </a>
             ))}
         </div>
-
         <div class="p-4 bg-gray-50 border-t border-gray-200 mt-auto">
             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 block">El Autor</span>
             <div class="flex flex-col gap-2">
@@ -130,27 +87,29 @@ const menuItems = [
     </div>
 
     <script is:inline>
-        const menuBtn = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        const closeBtn = document.getElementById('close-menu');
+        // SCRIPT ROBUSTO
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('menu-toggle');
+            const closeBtn = document.getElementById('close-menu');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
 
-        function toggleMenu() {
-            if (!sidebar || !overlay) return;
-            const isClosed = sidebar.classList.contains('-translate-x-full');
-            
-            if (isClosed) {
+            if (!menuBtn || !sidebar || !overlay || !closeBtn) return;
+
+            function openMenu() {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('opacity-0', 'pointer-events-none');
-            } else {
+            }
+
+            function closeMenu() {
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.add('opacity-0', 'pointer-events-none');
             }
-        }
 
-        if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
-        if (closeBtn) closeBtn.addEventListener('click', toggleMenu);
-        if (overlay) overlay.addEventListener('click', toggleMenu);
+            menuBtn.addEventListener('click', openMenu);
+            closeBtn.addEventListener('click', closeMenu);
+            overlay.addEventListener('click', closeMenu);
+        });
     </script>
 
 </body>
