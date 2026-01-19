@@ -73,3 +73,32 @@ const navLinks = [
             ))}
         </nav>
     </div>
+
+     <main>
+        <slot />
+    </main>
+
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const closeBtn = document.getElementById('close-menu');
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('side-menu-overlay');
+
+        function toggleMenu() {
+            const isClosed = sideMenu?.classList.contains('translate-x-full');
+            if (isClosed) {
+                sideMenu?.classList.remove('translate-x-full');
+                overlay?.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                sideMenu?.classList.add('translate-x-full');
+                overlay?.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        menuBtn?.addEventListener('click', toggleMenu);
+        closeBtn?.addEventListener('click', toggleMenu);
+        overlay?.addEventListener('click', toggleMenu);
+    </script>
+
+</body>
+</html>
