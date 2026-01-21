@@ -47,4 +47,9 @@ const archivos = defineCollection({
     })
 });
 
-export const collections = { personajes, lugares, familias, archivos };
+export const collections = { 
+    personajes, 
+    lugares,
+    familias, 
+    archivos 
+};

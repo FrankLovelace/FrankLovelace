@@ -1,0 +1,184 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const archivos = await getCollection('archivos');
+---
+
+<MainLayout>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <div id="spoiler-gate" class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center p-6 text-center">
+        
+        <div class="max-w-2xl border-4 border-red-600 p-8 md:p-12 relative bg-[#0a0a0a]">
+            <div class="absolute top-0 left-0 w-4 h-4 bg-red-600"></div>
+            <div class="absolute top-0 right-0 w-4 h-4 bg-red-600"></div>
+            <div class="absolute bottom-0 left-0 w-4 h-4 bg-red-600"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 bg-red-600"></div>
+
+            <h1 class="text-red-600 font-mono text-4xl md:text-6xl font-bold mb-6 tracking-tighter blink">¡ADVERTENCIA!</h1>
+            
+            <p class="text-gray-300 font-mono text-lg mb-8 leading-relaxed">
+                Estás a punto de acceder a los <strong>Archivos Clasificados de Hormenia</strong>. 
+                <br><br>
+                Esta sección contiene información sensible (SPOILERS MAYORES) que revela la verdad detrás de la narrativa oficial. 
+                Si no has completado la lectura de los registros públicos (El Libro), tu experiencia se verá comprometida.
+            </p>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="/" class="px-8 py-3 border border-gray-600 text-gray-400 font-mono hover:bg-gray-800 transition-colors uppercase text-sm">
+                    Rechazar y Salir
+                </a>
+                <button id="accept-btn" class="px-8 py-3 bg-red-700 text-black font-bold font-mono hover:bg-red-600 transition-colors uppercase text-sm shadow-[0_0_20px_rgba(220,38,38,0.5)]">
+                    Acepto los Riesgos // Acceder
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="min-h-screen bg-[#111] text-gray-300 font-['Courier_Prime'] p-6 md:p-12 pt-24 bg-pattern">
+        
+        <header class="mb-16 border-b border-gray-700 pb-8 flex flex-col md:flex-row justify-between items-end gap-4">
+            <div>
+                <h1 class="text-4xl text-white font-bold mb-2">DETRÁS DE HORMENIA</h1>
+                <p class="text-red-500 uppercase tracking-widest text-xs">Nivel de Acceso: 5 (Ojos Solamente)</p>
+            </div>
+            <div class="text-right hidden md:block">
+                <p class="text-xs text-gray-500">SYS_TIME: <span id="clock">00:00:00</span></p>
+                <p class="text-xs text-gray-500">IP_LOGGED: TRUE</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {archivos.map((archivo) => (
+                <div 
+                    class="relative bg-[#1a1a1a] border border-gray-700 p-1 cursor-pointer group hover:border-red-900 transition-colors"
+                    onclick={`openFile('${archivo.body}', '${archivo.data.titulo}', '${archivo.data.codigo}')`}
+                >
+                    <!-- Pestaña de Carpeta -->
+                    <div class="absolute -top-3 left-0 w-24 h-4 bg-[#1a1a1a] border-t border-l border-r border-gray-700 rounded-t-md"></div>
+                    
+                    <div class="p-6 h-full flex flex-col relative overflow-hidden">
+                        <!-- Sello de Fondo -->
+                        <div class="absolute -right-4 -bottom-4 text-6xl font-black text-white/5 rotate-[-15deg] pointer-events-none select-none">
+                            {archivo.data.nivel}
+                        </div>
+
+                        <div class="flex justify-between items-start mb-4 border-b border-dashed border-gray-700 pb-2">
+                            <span class="text-xs text-red-500 font-bold">{archivo.data.codigo}</span>
+                            <span class="text-xs text-gray-500">{archivo.data.fecha}</span>
+                        </div>
+
+                        <h3 class="text-xl text-white font-bold mb-2 group-hover:underline decoration-red-900 decoration-2 underline-offset-4">
+                            {archivo.data.titulo}
+                        </h3>
+
+                        <div class="mt-auto pt-4 flex gap-2">
+                            {archivo.data.tags?.map(tag => (
+                                <span class="text-[10px] bg-gray-800 text-gray-400 px-2 py-1 uppercase">{tag}</span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ))}
+
+        </div>
+
+    </div>
+
+    <div id="file-modal" class="fixed inset-0 z-[150] bg-black/90 hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-[#e3e3e3] text-black font-['Courier_Prime'] w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-sm shadow-2xl relative typewriter-paper">
+            
+            <button onclick="closeFile()" class="absolute top-4 right-4 text-red-700 hover:text-red-900 font-bold text-xl">
+                [X] CERRAR
+            </button>
+
+            <div class="p-8 md:p-16">
+                <div class="border-2 border-black p-2 mb-8 inline-block">
+                    <h2 class="text-xs font-bold uppercase">Clasificado</h2>
+                </div>
+                
+                <h1 id="file-title" class="text-3xl font-bold mb-2 uppercase underline decoration-double">Título</h1>
+                <p id="file-code" class="text-xs mb-8 text-gray-600 font-bold">REF: 0000</p>
+
+                <div id="file-content" class="prose prose-p:mb-4 prose-headings:font-bold prose-headings:uppercase prose-strong:text-red-900">
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-black flex justify-between items-center text-xs uppercase">
+                    <span>Dpto. de Inteligencia</span>
+                    <span class="text-red-700 font-bold rotate-[-2deg] border-2 border-red-700 px-2 py-1">CONFIDENCIAL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script is:inline>
+        const gate = document.getElementById('spoiler-gate');
+        const btn = document.getElementById('accept-btn');
+
+
+        btn.addEventListener('click', () => {
+            gate.style.opacity = '0';
+            gate.style.pointerEvents = 'none';
+            gate.style.transition = 'opacity 1s ease';
+        });
+
+        setInterval(() => {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            const el = document.getElementById('clock');
+            if(el) el.innerText = time;
+        }, 1000);
+
+        const modal = document.getElementById('file-modal');
+        const titleEl = document.getElementById('file-title');
+        const codeEl = document.getElementById('file-code');
+        const contentEl = document.getElementById('file-content');
+
+        window.openFile = (body, title, code) => {
+            titleEl.innerText = title;
+            codeEl.innerText = code;
+            contentEl.innerHTML = body.replace(/\n/g, '<br>'); 
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        window.closeFile = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
+
+    <style>
+        .bg-pattern {
+            background-image: radial-gradient(#333 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .blink {
+            animation: blinker 1.5s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        .typewriter-paper {
+            background-image: url("https://www.transparenttextures.com/patterns/paper.png");
+            background-color: #f0f0f0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border: 1px solid #555;
+        }
+    </style>
+
+</MainLayout>

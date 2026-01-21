@@ -1,10 +1,9 @@
 ---
-codigo: "EXP-001-A"
-titulo: "La anomalía"
-fecha: "12-Oct-2020"
-nivel: "SECRETO"
-estado: "Sin Resolver"
-tags: []
+codigo: "TEST-01"
+titulo: "Prueba de Sistema"
+fecha: "HOY"
+nivel: "CONFIDENCIAL"
+estado: "Abierto"
+tags: ["Test"]
 ---
-
-Descripción
+Contenido de prueba.
