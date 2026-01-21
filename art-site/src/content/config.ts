@@ -35,5 +35,16 @@ const familias = defineCollection({
         fundador: z.string().optional(),
     })
 });
+const archivos = defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/content/archivos" }),
+    schema: z.object({
+        codigo: z.string(), 
+        titulo: z.string(),
+        fecha: z.string(),
+        nivel: z.enum(['CONFIDENCIAL', 'SECRETO', 'TOP SECRET', 'EYES ONLY']),
+        estado: z.enum(['Abierto', 'Cerrado', 'Sin Resolver']),
+        tags: z.array(z.string()).optional()
+    })
+});
 
-export const collections = { personajes, lugares, familias };
+export const collections = { personajes, lugares, familias, archivos };
