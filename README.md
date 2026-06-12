@@ -9,18 +9,18 @@
 
 ---
 
-## 🔬 Specimen: naked eye
+## About me: 
 
-I spent years building software end to end — interfaces, servers, pipelines, deployments. At some point I aimed the same curiosity at matter itself, and now I work in **nanotechnology and scientific computing**. My home turf is **crystallography**: how atoms arrange, how order leaves fingerprints in diffraction data, and how code can read them.
+I used to spent my time building software end to end — interfaces, servers, pipelines, deployments. At some point I aimed the same curiosity at matter itself, and now I work in **nanotechnology and scientific computing**. My home turf is **crystallography**: how atoms arrange, how order leaves fingerprints in diffraction data, and how code can read them.
 
-- 📄 Currently writing my first paper: *A Review on Fullerenes*
-- 📖 Also writing a book — the literary kind
-- 🥋 I do martial arts
-- 🌐 My [portfolio](https://franklovelace.dev) is a zoom journey from the naked eye down to electron diffraction — built atom by atom with Astro, GSAP and Three.js
+- Currently writing my first paper: *A Review on Fullerenes*
+- Also writing a book — the literary kind
+- I do martial arts
+- My [portfolio](https://franklovelace.dev) is a zoom journey from the naked eye down to electron diffraction — built atom by atom with Astro, GSAP and Three.js
 
 ---
 
-## ⚙️ Instrument (Tech Stack)
+## Instrument (Tech Stack)
 
 The engineering background is the instrument; the science is the specimen.
 
@@ -33,9 +33,8 @@ The engineering background is the instrument; the science is the specimen.
 
 ---
 
-## 🧪 Featured — SEM · ~50,000×
+##  Featured 
 
-> Electrons carry no color. From here on, everything is grayscale.
 
 ### [BraggSpect](https://github.com/FrankLovelace/BraggSpect)
 > *X-ray Diffraction Analysis Platform*
@@ -55,7 +54,7 @@ ETL, feature engineering and statistical testing (Shapiro–Wilk, Kruskal–Wall
 
 ---
 
-## 📡 Diffraction · ~10,000,000× (Publications)
+## Publications
 
 | Year | Title | Status |
 | :--- | :--- | :--- |
@@ -63,11 +62,11 @@ ETL, feature engineering and statistical testing (Shapiro–Wilk, Kruskal–Wall
 
 ---
 
-## 🌍 Other worlds
+## Other webs
 
 *Same person, different lattices.*
 
 | World | What lives there |
 | :--- | :--- |
-| 🎨 [art.franklovelace.dev](https://art.franklovelace.dev) | My book-related publications |
-| 👤 [me.franklovelace.dev](https://me.franklovelace.dev) | My blog |
+| [art.franklovelace.dev](https://art.franklovelace.dev) | My book-related publications |
+| [me.franklovelace.dev](https://me.franklovelace.dev) | My blog |
