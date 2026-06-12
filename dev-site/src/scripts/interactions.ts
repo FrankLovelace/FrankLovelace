@@ -19,6 +19,19 @@ export function initChips(): void {
 
 const loaded = new WeakSet<HTMLElement>();
 
+interface SpinnableViewer {
+  spin(axis: string | boolean, speed?: number): void;
+}
+const viewers: SpinnableViewer[] = [];
+let spinning = true;
+
+/** Pause/resume the continuous re-render of every CIF viewer (they are expensive while offscreen). */
+export function setCifsSpinning(active: boolean): void {
+  if (active === spinning) return;
+  spinning = active;
+  viewers.forEach((v) => (active ? v.spin('y', 0.4) : v.spin(false)));
+}
+
 /** Load 3Dmol.js and render the CIF structure inside a .cif-slot. */
 export async function loadCif(slot: HTMLElement): Promise<void> {
   if (loaded.has(slot)) return;
@@ -41,7 +54,7 @@ export async function loadCif(slot: HTMLElement): Promise<void> {
     button?.remove();
     const viewer = $3Dmol.createViewer(slot, {
       backgroundColor: '#1b1d21',
-      antialias: true,
+      antialias: false,
     });
 
     const cell = buildModel(cifText);
@@ -73,7 +86,8 @@ export async function loadCif(slot: HTMLElement): Promise<void> {
     });
     viewer.zoomTo();
     viewer.render();
-    viewer.spin('y', 0.4);
+    viewers.push(viewer);
+    if (spinning) viewer.spin('y', 0.4);
   } catch (err) {
     if (button) button.textContent = 'unavailable';
     console.error('CIF viewer failed:', err);

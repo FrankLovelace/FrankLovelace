@@ -359,11 +359,12 @@ html[data-journey='zoom'] .scene {
   height: 100%;
   min-height: 0;
   visibility: hidden;
-  will-change: transform, opacity;
   backface-visibility: hidden;
 }
 html[data-journey='zoom'] .scene.is-active {
   visibility: visible;
+  /* only the two scenes in transition get a composited layer */
+  will-change: transform, opacity;
 }
 .depth-field {
   position: absolute;

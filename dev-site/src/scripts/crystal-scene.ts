@@ -1,13 +1,18 @@
 
 import * as THREE from 'three';
 
-export function mountLattice(container: HTMLElement): void {
+export interface LatticeHandle {
+  /** Start/stop the render loop so the lattice costs nothing while offscreen. */
+  setActive(active: boolean): void;
+}
+
+export function mountLattice(container: HTMLElement): LatticeHandle {
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   } catch {
     container.innerHTML = fallbackSvg();
-    return;
+    return { setActive() {} };
   }
 
   const scene = new THREE.Scene();
@@ -115,7 +120,7 @@ export function mountLattice(container: HTMLElement): void {
   resize();
   new ResizeObserver(resize).observe(container);
 
-  renderer.setAnimationLoop(() => {
+  const loop = () => {
     group.rotation.y += vx;
     group.rotation.x += vy;
     if (!dragging) {
@@ -123,7 +128,16 @@ export function mountLattice(container: HTMLElement): void {
       vy += (0 - vy) * 0.02;
     }
     renderer.render(scene, camera);
-  });
+  };
+
+  let running = false;
+  const setActive = (active: boolean) => {
+    if (active === running) return;
+    running = active;
+    renderer.setAnimationLoop(active ? loop : null);
+  };
+  setActive(true);
+  return { setActive };
 }
 
 function fallbackSvg(): string {

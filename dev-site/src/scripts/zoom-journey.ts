@@ -145,6 +145,7 @@ function initZoom(
       scene.el.style.transform = '';
       scene.el.style.clipPath = '';
       scene.el.style.opacity = '';
+      scene.el.style.visibility = '';
       if (scene.inner) {
         scene.inner.style.scale = '';
         const h = scene.inner.offsetHeight;
@@ -217,6 +218,7 @@ function initZoom(
         scene.el.style.clipPath = '';
         scene.el.style.opacity = '';
         scene.el.style.zIndex = '';
+        scene.el.style.visibility = '';
       }
     });
 
@@ -227,10 +229,20 @@ function initZoom(
     const Fx = lerp(cur.fx, W / 2, drift);
     const Fy = lerp(cur.fy, H / 2, drift);
 
-    cur.el.style.transformOrigin = `${cur.fx}px ${cur.fy}px`;
-    cur.el.style.transform = `translate3d(${Fx - cur.fx}px, ${Fy - cur.fy}px, 0) scale(${Z})`;
-    cur.el.style.opacity = String(p > 0.85 ? 1 - (p - 0.85) / 0.15 : 1);
-    cur.el.style.clipPath = 'none';
+    // Fade the outgoing scene to 0 by p=0.97 and stop painting it past that point:
+    // re-entering a boundary backwards would otherwise rasterize a near-invisible
+    // full-viewport layer at ~22× scale in a single frame.
+    const fade = p > 0.85 ? clamp(1 - (p - 0.85) / 0.12, 0, 1) : 1;
+    if (fade <= 0) {
+      cur.el.style.visibility = 'hidden';
+      cur.el.style.opacity = '0';
+    } else {
+      cur.el.style.visibility = '';
+      cur.el.style.transformOrigin = `${cur.fx}px ${cur.fy}px`;
+      cur.el.style.transform = `translate3d(${Fx - cur.fx}px, ${Fy - cur.fy}px, 0) scale(${Z})`;
+      cur.el.style.opacity = String(fade);
+      cur.el.style.clipPath = 'none';
+    }
     cur.el.style.zIndex = '1';
 
     const s = Z / ZMAX;
@@ -292,7 +304,11 @@ function initZoom(
     });
   }
 
-  addEventListener('resize', () => ScrollTrigger.refresh());
+  let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+  addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 150);
+  });
 
   const scrollToLevel = (level: number) => {
     const trackTop = track.getBoundingClientRect().top + scrollY;
