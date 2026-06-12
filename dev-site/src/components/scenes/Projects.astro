@@ -1,0 +1,42 @@
+---
+import ProjectCard from '../ProjectCard.astro';
+import { projects } from '../../data/projects';
+import { t, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+---
+
+<section
+  class="scene projects zone-gray noise scanlines"
+  id="level-2"
+  data-scene
+  data-level="2"
+  data-mag="50000"
+  data-zone="gray"
+>
+  <div class="scene__inner">
+    <header>
+      <span class="lens-tag reveal">{dict.projects.lensTag}</span>
+      <h2 class="reveal">{dict.projects.title}</h2>
+      <p class="subtitle reveal">{dict.projects.subtitle}</p>
+      <div class="chips reveal" role="group">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">{dict.projects.filterAll}</button>
+        <button class="chip" type="button" data-filter="nano" aria-pressed="false">{dict.projects.filterNano}</button>
+        <button class="chip" type="button" data-filter="dev" aria-pressed="false">{dict.projects.filterDev}</button>
+      </div>
+    </header>
+    <div class="project-grid">
+      {projects.map((project) => <ProjectCard locale={locale} project={project} />)}
+    </div>
+    <div style="text-align:center">
+      <button class="focal" data-focal type="button">
+        <span class="focal__ring" aria-hidden="true"></span>
+        <span>{dict.projects.focalLabel}</span>
+      </button>
+    </div>
+  </div>
+</section>

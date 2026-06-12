@@ -1,0 +1,62 @@
+---
+import PublicationItem from '../PublicationItem.astro';
+import { publications } from '../../data/publications';
+import { socials, worlds } from '../../data/links';
+import { t, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+---
+
+<section
+  class="scene atomic zone-gray noise"
+  id="level-4"
+  data-scene
+  data-level="4"
+  data-mag="10000000"
+  data-zone="gray"
+>
+  <div class="lattice-bg" data-lattice aria-hidden="true">
+    <noscript></noscript>
+  </div>
+  <div class="scene__inner">
+    <div>
+      <span class="lens-tag reveal">{dict.pubs.lensTag}</span>
+      <h2 class="reveal">{dict.pubs.title}</h2>
+      <p class="subtitle reveal">{dict.pubs.subtitle}</p>
+      <div class="pub-list">
+        {publications.map((pub) => <PublicationItem locale={locale} pub={pub} />)}
+      </div>
+      <p class="footer-line reveal">{dict.footer.line}</p>
+    </div>
+    <div class="side-col">
+      <div class="worlds-wrap reveal">
+        <h2>{dict.worlds.title}</h2>
+        <p class="subtitle">{dict.worlds.blurb}</p>
+        <div class="worlds" style="margin-top:14px">
+          <a class="world" href={worlds.art.url} target="_blank" rel="noopener noreferrer">
+            <h3>{dict.worlds.artTitle} <span class="go">{dict.worlds.visit} ↗</span></h3>
+            <p>{dict.worlds.artDesc}</p>
+          </a>
+          <a class="world" href={worlds.personal.url} target="_blank" rel="noopener noreferrer">
+            <h3>{dict.worlds.personalTitle} <span class="go">{dict.worlds.visit} ↗</span></h3>
+            <p>{dict.worlds.personalDesc}</p>
+          </a>
+        </div>
+      </div>
+      <div class="contact-wrap reveal">
+        <h2>{dict.contact.title}</h2>
+        <p class="subtitle">{dict.contact.blurb}</p>
+        <div class="contact-links">
+          {socials.map((s) => (
+            <a href={s.url} target="_blank" rel="noopener noreferrer">{s.name}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="lattice-hint" aria-hidden="true">{dict.lattice.hint}</p>
+</section>

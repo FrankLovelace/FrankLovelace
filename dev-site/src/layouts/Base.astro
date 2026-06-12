@@ -1,0 +1,71 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '../styles/global.css';
+import { t, localePath, altLocale, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+const other = altLocale(locale);
+---
+
+<!doctype html>
+<html lang={locale} data-mode="pro" data-journey="static" data-zone="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{dict.meta.title}</title>
+    <meta name="description" content={dict.meta.description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="alternate" hreflang={other} href={localePath(other)} />
+    <link rel="alternate" hreflang={locale} href={localePath(locale)} />
+    <meta property="og:title" content={dict.meta.title} />
+    <meta property="og:description" content={dict.meta.description} />
+    <meta property="og:type" content="website" />
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem('fl-mode');
+          document.documentElement.dataset.mode = saved === 'pop' ? 'pop' : 'pro';
+        } catch {}
+        const fine = matchMedia('(min-width: 900px)').matches;
+        const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.documentElement.dataset.journey = fine && !calm ? 'zoom' : 'static';
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{dict.nav.skip}</a>
+
+    <header class="topbar">
+      <a class="monogram" href={localePath(locale)} aria-label={dict.hero.name}>F·L</a>
+      <div class="topbar__controls">
+        <button
+          class="ctrl mode-toggle"
+          type="button"
+          aria-label={dict.chrome.modeToggle}
+          data-label-pro={dict.chrome.modePro}
+          data-label-pop={dict.chrome.modePop}
+        >
+          <span class="mode-dot" aria-hidden="true"></span>
+          <span class="mode-label">{dict.chrome.modePro}</span>
+        </button>
+        <a class="ctrl" href={localePath(other)} data-lang-link aria-label={dict.chrome.langSwitch}>
+          {dict.chrome.langLabel}
+        </a>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
+  </body>
+</html>

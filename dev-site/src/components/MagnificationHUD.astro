@@ -1,0 +1,32 @@
+---
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+const levels = dict.nav.levels;
+---
+
+<div class="hud" aria-hidden="true">
+  <div class="hud__mag">{dict.hud.magnification} <span data-mag-readout>1×</span></div>
+  <div class="hud__bar"></div>
+  <div data-bar-label>10 cm</div>
+  <div class="hud__lens" data-lens-label>{levels[0]}</div>
+</div>
+
+<nav aria-label="Levels">
+  <ul class="levels">
+    {
+      levels.map((label, i) => (
+        <li>
+          <a href={`#level-${i}`} data-level-link={i} aria-current={i === 0 ? 'true' : undefined}>
+            <span class="dot" aria-hidden="true" />
+            <span class="label">{label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

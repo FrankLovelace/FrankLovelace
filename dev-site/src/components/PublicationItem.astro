@@ -1,0 +1,36 @@
+---
+import { t, type Locale } from '../i18n';
+import type { Publication } from '../data/publications';
+
+interface Props {
+  locale: Locale;
+  pub: Publication;
+}
+const { locale, pub } = Astro.props;
+const dict = t(locale);
+
+const statusLabel = {
+  'in-progress': dict.pubs.statusInProgress,
+  preprint: dict.pubs.statusPreprint,
+  published: dict.pubs.statusPublished,
+}[pub.status];
+---
+
+<article class="pub reveal">
+  <div class="pub__top">
+    <span class={`pub__status pub__status--${pub.status}`}>{statusLabel}</span>
+    <span>{pub.year}</span>
+    {pub.venue && <span>{pub.venue}</span>}
+  </div>
+  <h3>{pub.title[locale]}</h3>
+  <p>{pub.blurb[locale]}</p>
+  {
+    pub.links && (
+      <div class="pub__links">
+        {pub.links.doi && <a href={pub.links.doi} target="_blank" rel="noopener noreferrer">doi ↗</a>}
+        {pub.links.arxiv && <a href={pub.links.arxiv} target="_blank" rel="noopener noreferrer">arxiv ↗</a>}
+        {pub.links.pdf && <a href={pub.links.pdf} target="_blank" rel="noopener noreferrer">pdf ↗</a>}
+      </div>
+    )
+  }
+</article>

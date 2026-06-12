@@ -1,0 +1,32 @@
+---
+import CifViewer from './CifViewer.astro';
+import { t, type Locale } from '../i18n';
+import type { Project } from '../data/projects';
+
+interface Props {
+  locale: Locale;
+  project: Project;
+}
+const { locale, project } = Astro.props;
+const dict = t(locale);
+---
+
+<article class="card reveal" data-kind={project.kind}>
+  <h3>
+    {project.title}
+    <span class="kind">{project.kind}</span>
+  </h3>
+  <p>{project.desc[locale]}</p>
+  <div class="tags">
+    {project.tags.map((tag) => <span>{tag}</span>)}
+  </div>
+  {project.cif && <CifViewer locale={locale} src={project.cif} />}
+  <div class="card__links">
+    {project.github && (
+      <a href={project.github} target="_blank" rel="noopener noreferrer">{dict.projects.code} ↗</a>
+    )}
+    {project.demo && (
+      <a href={project.demo} target="_blank" rel="noopener noreferrer">{dict.projects.demo} ↗</a>
+    )}
+  </div>
+</article>

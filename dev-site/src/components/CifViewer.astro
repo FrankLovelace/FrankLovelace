@@ -1,0 +1,15 @@
+---
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  /** Path to a CIF file under public/, e.g. /structures/nacl.cif */
+  src: string;
+}
+const { locale, src } = Astro.props;
+const dict = t(locale);
+---
+
+<div class="cif-slot" data-cif={src} data-loading-label={dict.cif.loading}>
+  <button class="cif-load" type="button">{dict.cif.load}</button>
+</div>

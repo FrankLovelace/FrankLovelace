@@ -1,0 +1,22 @@
+---
+import { t, type Locale } from '../i18n';
+import type { Video } from '../data/videos';
+
+interface Props {
+  locale: Locale;
+  video: Video;
+}
+const { locale, video } = Astro.props;
+const dict = t(locale);
+---
+
+<a class="vcard reveal" href={video.url} target="_blank" rel="noopener noreferrer">
+  <div class="vcard__screen noise scanlines">
+    <span class="rec">{dict.videos.rec}</span>
+    <span class="timecode">{video.timecode}</span>
+  </div>
+  <div class="vcard__meta">
+    <h3>{video.title[locale]}</h3>
+    <span class="where">{dict.videos.watchOn} {video.platform} ↗</span>
+  </div>
+</a>

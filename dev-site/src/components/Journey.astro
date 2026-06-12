@@ -1,0 +1,33 @@
+---
+import Hero from './scenes/Hero.astro';
+import About from './scenes/About.astro';
+import Projects from './scenes/Projects.astro';
+import Videos from './scenes/Videos.astro';
+import AtomicEnd from './scenes/AtomicEnd.astro';
+import MagnificationHUD from './MagnificationHUD.astro';
+import type { Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+---
+
+<div class="journey" data-journey-root>
+  <div class="journey__track" data-track>
+    <div class="journey__stage" data-stage>
+      <Hero locale={locale} />
+      <About locale={locale} />
+      <Projects locale={locale} />
+      <Videos locale={locale} />
+      <AtomicEnd locale={locale} />
+      <canvas class="depth-field" data-depth></canvas>
+    </div>
+  </div>
+</div>
+
+<MagnificationHUD locale={locale} />
+
+<script>
+  import '../scripts/main';
+</script>

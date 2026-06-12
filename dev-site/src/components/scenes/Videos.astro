@@ -1,0 +1,37 @@
+---
+import VideoCard from '../VideoCard.astro';
+import { videos } from '../../data/videos';
+import { t, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+---
+
+<section
+  class="scene videos zone-gray noise scanlines"
+  id="level-3"
+  data-scene
+  data-level="3"
+  data-mag="500000"
+  data-zone="gray"
+>
+  <div class="scene__inner">
+    <header>
+      <span class="lens-tag reveal">{dict.videos.lensTag}</span>
+      <h2 class="reveal">{dict.videos.title}</h2>
+      <p class="subtitle reveal">{dict.videos.subtitle}</p>
+    </header>
+    <div class="video-grid">
+      {videos.map((video) => <VideoCard locale={locale} video={video} />)}
+    </div>
+    <div style="text-align:center">
+      <button class="focal" data-focal type="button">
+        <span class="focal__ring" aria-hidden="true"></span>
+        <span>{dict.videos.focalLabel}</span>
+      </button>
+    </div>
+  </div>
+</section>

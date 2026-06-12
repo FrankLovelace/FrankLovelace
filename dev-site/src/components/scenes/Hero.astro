@@ -1,0 +1,29 @@
+---
+import { t, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+---
+
+<section
+  class="scene hero zone-light"
+  id="level-0"
+  data-scene
+  data-level="0"
+  data-mag="1"
+  data-zone="light"
+>
+  <div class="scene__inner">
+    <p class="hero__role pop-in reveal">{dict.hero.role}</p>
+    <h1 class="pop-in reveal">Frank <span class="accent">Lovelace</span></h1>
+    <p class="hero__quote pop-in reveal">“{dict.hero.quote}”</p>
+    <button class="focal pop-in" data-focal type="button">
+      <span class="focal__ring" aria-hidden="true"></span>
+      <span>{dict.hero.focalLabel}</span>
+    </button>
+  </div>
+  <p class="hero__hint" aria-hidden="true">{dict.hero.scrollHint} ↓</p>
+</section>

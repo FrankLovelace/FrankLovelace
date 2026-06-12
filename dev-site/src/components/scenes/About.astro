@@ -1,0 +1,34 @@
+---
+import { t, type Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const dict = t(locale);
+---
+
+<section
+  class="scene about zone-light"
+  id="level-1"
+  data-scene
+  data-level="1"
+  data-mag="400"
+  data-zone="light"
+>
+  <div class="scene__inner">
+    <div>
+      <span class="lens-tag reveal">{dict.about.lensTag}</span>
+      <h2 class="reveal">{dict.about.title}</h2>
+      <p class="reveal">{dict.about.p1}</p>
+      <p class="reveal">{dict.about.p2}</p>
+      <p class="reveal">{dict.about.p3}</p>
+    </div>
+    <div class="sample reveal" aria-hidden="true">
+      <button class="focal" data-focal type="button" tabindex="-1">
+        <span class="focal__ring"></span>
+        <span>{dict.about.focalLabel}</span>
+      </button>
+    </div>
+  </div>
+</section>
