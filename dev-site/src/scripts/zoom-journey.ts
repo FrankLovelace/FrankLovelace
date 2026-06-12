@@ -146,6 +146,7 @@ function initZoom(
       scene.el.style.clipPath = '';
       scene.el.style.opacity = '';
       scene.el.style.visibility = '';
+      scene.el.style.willChange = '';
       if (scene.inner) {
         scene.inner.style.scale = '';
         const h = scene.inner.offsetHeight;
@@ -219,6 +220,7 @@ function initZoom(
         scene.el.style.opacity = '';
         scene.el.style.zIndex = '';
         scene.el.style.visibility = '';
+        scene.el.style.willChange = '';
       }
     });
 
@@ -233,15 +235,26 @@ function initZoom(
     // re-entering a boundary backwards would otherwise rasterize a near-invisible
     // full-viewport layer at ~22× scale in a single frame.
     const fade = p > 0.85 ? clamp(1 - (p - 0.85) / 0.12, 0, 1) : 1;
+    const EPS = 0.001;
     if (fade <= 0) {
       cur.el.style.visibility = 'hidden';
       cur.el.style.opacity = '0';
     } else {
       cur.el.style.visibility = '';
-      cur.el.style.transformOrigin = `${cur.fx}px ${cur.fy}px`;
-      cur.el.style.transform = `translate3d(${Fx - cur.fx}px, ${Fy - cur.fy}px, 0) scale(${Z})`;
       cur.el.style.opacity = String(fade);
       cur.el.style.clipPath = 'none';
+      if (p <= EPS) {
+        // Settled on this scene: drop the transform and the compositor layer so the
+        // browser re-rasterizes at crisp 1:1 — scaled layers re-entered backwards keep
+        // stale tiles otherwise (content shows up torn/blurry).
+        cur.el.style.transform = '';
+        cur.el.style.transformOrigin = '';
+        cur.el.style.willChange = 'auto';
+      } else {
+        cur.el.style.willChange = '';
+        cur.el.style.transformOrigin = `${cur.fx}px ${cur.fy}px`;
+        cur.el.style.transform = `translate3d(${Fx - cur.fx}px, ${Fy - cur.fy}px, 0) scale(${Z})`;
+      }
     }
     cur.el.style.zIndex = '1';
 
@@ -252,9 +265,18 @@ function initZoom(
       p < 0.86
         ? lerp(cur.r0 * ZMAX, capR, smooth(p / 0.86))
         : lerp(capR, cover * 1.25, smooth((p - 0.86) / 0.14));
-    next.el.style.transformOrigin = '50% 50%';
-    next.el.style.transform = `translate3d(${Fx - W / 2}px, ${Fy - H / 2}px, 0) scale(${s})`;
-    next.el.style.clipPath = p > 0.97 ? 'none' : `circle(${rLocal}px at 50% 50%)`;
+    if (p >= 1 - EPS) {
+      // settled on the incoming scene (end of track): same crisp re-raster treatment
+      next.el.style.transform = '';
+      next.el.style.transformOrigin = '';
+      next.el.style.willChange = 'auto';
+      next.el.style.clipPath = 'none';
+    } else {
+      next.el.style.willChange = '';
+      next.el.style.transformOrigin = '50% 50%';
+      next.el.style.transform = `translate3d(${Fx - W / 2}px, ${Fy - H / 2}px, 0) scale(${s})`;
+      next.el.style.clipPath = p > 0.97 ? 'none' : `circle(${rLocal}px at 50% 50%)`;
+    }
     next.el.style.opacity = '1';
     next.el.style.zIndex = '2';
 
