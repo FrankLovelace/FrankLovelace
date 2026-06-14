@@ -18,7 +18,7 @@ export const projects: Project[] = [
     title: 'VAK Dashboard',
     desc: {
       en: 'A calculator that allows you to find the bond formed by two atoms from their symbol and number of electrons, programmed in WebAssembly for speed and efficiency.',
-      es: 'Una calculadora que permiite conocer el enlace formado por dos átomos a partir de su símbolo y su número de electrones, programado en Webassembly para que sea rápido y eficiente.',
+      es: 'Una calculadora que permite conocer el enlace formado por dos átomos a partir de su símbolo y su número de electrones, programado en Webassembly para que sea rápido y eficiente.',
     },
     tags: ['Van Arkel Ketelaar', 'WebAssembly', 'crystallography'],
     github: 'https://github.com/FrankLovelace/EnlacesQuimicos',
