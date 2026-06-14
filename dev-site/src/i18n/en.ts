@@ -31,7 +31,7 @@ export default {
   about: {
     lensTag: 'optical microscope · ~400×',
     title: 'About me',
-    p1: 'I spent my time as a software developer building software end to end — interfaces, servers, pipelines, deployments. At some point I aimed the same curiosity at matter itself, and now I work in nanotechnology and scientific computing.',
+    p1: 'I used to spend my time as a software developer building software end to end — interfaces, servers, pipelines, deployments. At some point I aimed the same curiosity at matter itself, and now I work in nanotechnology and scientific computing.',
     p2: 'My home turf is crystallography: how atoms arrange, how order leaves fingerprints in diffraction data, and how code can read them. I am currently writing my first paper and not afraid of going deeper into any branch of the nanoworld.',
     p3: 'This site is both things at once — the engineering background is the instrument, the science is the specimen.',
     focalLabel: '',
