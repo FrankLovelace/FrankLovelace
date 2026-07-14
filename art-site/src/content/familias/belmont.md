@@ -1,8 +1,7 @@
 ---
 id: 1
 nombre: "Familia Belmont"
-lema: "La pureza es poder"
-especialidad: "Industria Química"
+especialidad: "Farmaceutica"
 colorHex: "#1e3a8a"
-descripcion: "Controlan la Industria Farmaceutica"
+descripcion: "El pilar de tu salud en Hormenia. Porque sabemos que la vida es un regalo, trabajamos cada día para ayudarte a protegerlo."
 ---
