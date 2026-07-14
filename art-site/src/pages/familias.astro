@@ -5,212 +5,217 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const familiasData = await getCollection('familias' as any);
+// Ordenar por ID para consistencia
+const familias = familiasData.sort((a: any, b: any) => a.data.id - b.data.id);
 
-const getFamilyImage = (filename: string) => {
+const getFamilyImage = (filename: string, specialty: string) => {
     const extensions = ['webp', 'png', 'jpg', 'jpeg', 'svg'];
     for (const ext of extensions) {
         const filePath = path.join(process.cwd(), 'public', 'familias', `${filename}.${ext}`);
         if (fs.existsSync(filePath)) return `/familias/${filename}.${ext}`;
     }
-    return "https://placehold.co/400x400/1e1e1e/FFF?text=Escudo";
+    
+    // Fallback: imágenes genéricas libres de derechos (Unsplash) según especialidad
+    const specLower = specialty.toLowerCase();
+    if (specLower.includes('farmaceutica') || specLower.includes('farmacéutica')) {
+        return "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop"; // Laboratorio/Medicina
+    }
+    if (specLower.includes('alimentacion') || specLower.includes('alimentación')) {
+        return "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop"; // Panadería/Granos
+    }
+    if (specLower.includes('banca') || specLower.includes('finanzas')) {
+        return "https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?q=80&w=800&auto=format&fit=crop"; // Banco
+    }
+    if (specLower.includes('bienes') || specLower.includes('urbano') || specLower.includes('desarrollo') || specLower.includes('raices') || specLower.includes('raíces')) {
+        return "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop"; // Rascacielos/Desarrollo
+    }
+    if (specLower.includes('educacion') || specLower.includes('educación')) {
+        return "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=800&auto=format&fit=crop"; // Biblioteca/Educación
+    }
+    if (specLower.includes('entretenimiento') || specLower.includes('periodismo')) {
+        return "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=800&auto=format&fit=crop"; // Prensa/Noticias
+    }
+    if (specLower.includes('servicios') || specLower.includes('luz') || specLower.includes('agua') || specLower.includes('básicos') || specLower.includes('basicos')) {
+        return "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=800&auto=format&fit=crop"; // Energía/Luz
+    }
+    return "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop"; // Default abstracto/tecnológico
 };
-
-const layoutMap: Record<number, any> = {
-    1: { top: '15%', left: '15%', lineType: 'zigzag', label: 'Noroeste' },
-    2: { top: '50%', left: '10%', lineType: 'dotted', label: 'Oeste' },
-    3: { top: '85%', left: '20%', lineType: 'straight', label: 'Suroeste' },
-    4: { top: '85%', left: '80%', lineType: 'curve-s', label: 'Sureste' },
-    5: { top: '15%', left: '85%', lineType: 'spikes', label: 'Noreste' },
-    6: { top: '50%', left: '90%', lineType: 'double', label: 'Este' },
-    7: { top: '10%', left: '50%', lineType: 'wavy', label: 'Norte' }
-};
-
-const svgPaths: Record<number, string> = {
-    1: "M 50 50 L 35 35 L 35 25 L 20 25 L 15 15", 
-    2: "M 50 50 Q 30 50 10 50", 
-    3: "M 50 50 L 20 85", 
-    4: "M 50 50 C 50 70, 80 60, 80 85", 
-    5: "M 50 50 L 60 40 L 70 60 L 80 30 L 85 15", 
-    6: "M 50 50 L 90 50", 
-    7: "M 50 50 Q 40 30 50 10", 
-};
-
 ---
 
 <MainLayout>
-
-    <div class="min-h-screen bg-gray-50 overflow-hidden relative flex items-center justify-center py-20">
+    <div class="min-h-[calc(100vh-4rem)] bg-slate-50/50 flex flex-col justify-between py-12">
         
-        <h1 class="absolute top-24 left-0 w-full text-center text-[10vw] font-bold text-gray-200 pointer-events-none select-none z-0">
-            LAS 7 FAMILIAS
-        </h1>
-
-        <div class="relative w-full max-w-5xl aspect-square md:aspect-[16/9] z-10 scale-90 md:scale-100">
-
-            <svg class="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
- 
-                {familiasData.map((f: any) => {
-                    const pos = layoutMap[f.data.id];
-                    const pathD = svgPaths[f.data.id];
-                    if(!pos) return null;
-
-                    return (
-                        <path 
-                            d={pathD} 
-                            fill="none" 
-                            stroke={f.data.colorHex} 
-                            stroke-width="0.3"
-                            stroke-dasharray={pos.lineType === 'dotted' ? '1, 1' : 'none'}
-                            class="opacity-50"
-                        />
-                    );
-                })}
-            </svg>
-
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 w-32 h-32 md:w-40 md:h-40 bg-white rounded-full shadow-[0_0_40px_rgba(0,0,0,0.1)] border-4 border-gray-900 flex items-center justify-center group cursor-default">
-                <div class="text-center">
-                    <span class="block font-bold text-2xl tracking-tighter">HORMENIA</span>
-                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">Nexus Central</span>
-                </div>
-                <div class="absolute inset-0 rounded-full border border-gray-200 animate-ping opacity-20"></div>
-            </div>
-
-            {familiasData.map((f: any) => {
-                const pos = layoutMap[f.data.id];
-                const img = getFamilyImage(f.id); 
-                
-                const modalData = {
-                    nombre: f.data.nombre,
-                    especialidad: f.data.especialidad,
-                    descripcion: f.data.descripcion,
-                    color: f.data.colorHex,
-                    img: img,
-                };
-
-                if (!pos) return null; 
-
-                return (
-                    <div 
-                        class="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group family-node"
-                        style={`top: ${pos.top}; left: ${pos.left};`}
-                        data-family={JSON.stringify(modalData)}
-                    >
-                        <!-- Tarjeta Flotante -->
-                        <div class="relative w-24 h-24 md:w-32 md:h-32 bg-white rounded-full border-2 shadow-lg hover:scale-110 transition-all duration-300 flex items-center justify-center overflow-hidden z-20"
-                             style={`border-color: ${f.data.colorHex};`}>
-                            
-                            <!-- Logo Familia -->
-                            <img src={img} alt={f.data.nombre} class="w-full h-full object-cover p-2" />
-                            
-                            <!-- Tooltip al hover -->
-                            <div class="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity p-2 text-center">
-                                <span class="text-white text-xs font-bold uppercase">{f.data.nombre}</span>
-                            </div>
-                        </div>
-
-                        <!-- Etiqueta debajo -->
-                        <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100 whitespace-nowrap z-30">
-                            <span class="text-xs font-bold text-gray-600 uppercase tracking-wider">{f.data.especialidad}</span>
-                        </div>
-                    </div>
-                );
-            })}
-
+        <!-- Cabecera Limpia -->
+        <div class="text-center max-w-2xl mx-auto pt-8 pb-4 px-6">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
+                Las 7 Familias
+            </h1>
+            <div class="w-12 h-1 bg-gray-300 mx-auto rounded-full mb-4"></div>
+            <p class="text-base text-gray-500 font-light leading-relaxed">
+                Conoce los pilares fundamentales que guían e impulsan el desarrollo de nuestra sociedad.
+            </p>
         </div>
-    </div>
 
-    <div id="family-modal" class="fixed inset-0 bg-black/60 z-[150] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4 backdrop-blur-sm">
-        <div id="modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative border-t-8">
+        <!-- Contenedor del Carrusel -->
+        <div class="relative w-full max-w-4xl mx-auto px-4 md:px-12 flex-1 flex flex-col justify-center my-6">
             
-            <button id="close-modal" class="absolute top-4 right-4 p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors z-20">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <!-- Flecha Izquierda -->
+            <button id="prev-btn" class="absolute left-0 md:-left-4 top-1/2 -translate-y-1/2 z-30 p-3 bg-white border border-gray-100 rounded-full shadow-md text-gray-400 hover:text-gray-900 hover:shadow-lg transition-all focus:outline-none cursor-pointer" aria-label="Anterior">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </button>
 
-            <div class="relative h-32 bg-gray-50 flex items-center justify-center overflow-hidden">
-                <img id="m-bg-img" src="" class="absolute inset-0 w-full h-full object-cover opacity-10 blur-md grayscale" />
-                <img id="m-logo" src="" class="relative h-20 w-20 object-contain drop-shadow-lg" />
+            <!-- Ventana del Carrusel -->
+            <div class="carousel-viewport overflow-hidden relative w-full rounded-3xl shadow-xl bg-white border border-gray-100/80 min-h-[500px] md:min-h-[400px] flex items-stretch">
+                <div class="carousel-track flex w-full transition-transform duration-500 ease-out">
+                    {familias.map((f: any) => {
+                        const img = getFamilyImage(f.id, f.data.especialidad);
+                        return (
+                            <div class="carousel-slide w-full flex-shrink-0 flex flex-col md:flex-row items-stretch">
+                                <!-- Lado de la Imagen -->
+                                <div class="w-full md:w-1/2 min-h-[220px] md:min-h-0 relative overflow-hidden bg-gray-100">
+                                    <img src={img} alt={f.data.nombre} class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 absolute inset-0" loading="lazy" />
+                                    <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/10 via-transparent to-transparent"></div>
+                                </div>
+                                
+                                <!-- Lado del Contenido -->
+                                <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-between bg-white">
+                                    <div>
+                                        <!-- Badge Especialidad -->
+                                        <div class="mb-4">
+                                            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border" 
+                                                  style={`border-color: ${f.data.colorHex}25; color: ${f.data.colorHex}; background-color: ${f.data.colorHex}08;`}>
+                                                {f.data.especialidad}
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Nombre de la Familia -->
+                                        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 tracking-tight">
+                                            {f.data.nombre}
+                                        </h2>
+                                        
+                                        <!-- Descripción en Cursiva -->
+                                        <p class="text-gray-600 text-sm md:text-base leading-relaxed italic font-light">
+                                            "{f.data.descripcion}"
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Botón Placeholder -->
+                                    <div class="mt-8">
+                                        <button class="w-full py-3 px-4 bg-gray-50 border border-gray-200 text-gray-400 rounded-xl text-xs font-semibold uppercase tracking-wider cursor-not-allowed transition-all flex items-center justify-center gap-2" disabled>
+                                            Conocer Miembros
+                                            <span class="text-[9px] px-1.5 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-500 font-medium normal-case tracking-normal">Próximamente</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
-            <div class="p-8 text-center">
-                <h2 id="m-name" class="text-3xl font-bold text-gray-900 mb-1">Nombre Familia</h2>
+            <!-- Flecha Derecha -->
+            <button id="next-btn" class="absolute right-0 md:-right-4 top-1/2 -translate-y-1/2 z-30 p-3 bg-white border border-gray-100 rounded-full shadow-md text-gray-400 hover:text-gray-900 hover:shadow-lg transition-all focus:outline-none cursor-pointer" aria-label="Siguiente">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
 
-                <div class="grid grid-cols-2 gap-4 mb-6 text-left bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div>
-                        <span class="text-xs font-bold text-gray-400 uppercase block">Especialidad</span>
-                        <span id="m-spec" class="text-sm font-bold text-gray-800">Industria</span>
-                    </div>
-                    <div>
-                    </div>
-                </div>
-
-                <p id="m-desc" class="text-gray-600 text-sm leading-relaxed text-left">
-                    Descripción detallada...
-                </p>
-
-                <div class="mt-8 pt-6 border-t border-gray-100 flex justify-center">
-                    <button class="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors flex items-center gap-2">
-                        Ver Miembros Conocidos
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </button>
-                </div>
-            </div>
         </div>
+
+        <!-- Indicadores (dots) -->
+        <div class="flex justify-center gap-3 pb-8">
+            {familias.map((f: any, idx: number) => (
+                <button class="carousel-dot w-2.5 h-2.5 rounded-full bg-gray-200 hover:bg-gray-400 transition-all focus:outline-none cursor-pointer" data-index={idx} style={`--active-color: ${f.data.colorHex}`} aria-label={`Ir a familia ${idx + 1}`}></button>
+            ))}
+        </div>
+
     </div>
 
+    <!-- Script de Interactividad -->
     <script is:inline>
         document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('family-modal');
-            const content = document.getElementById('modal-content');
-            const closeBtn = document.getElementById('close-modal');
+            const track = document.querySelector('.carousel-track');
+            const slides = document.querySelectorAll('.carousel-slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const dots = document.querySelectorAll('.carousel-dot');
 
-            const mName = document.getElementById('m-name');
-            const mSpec = document.getElementById('m-spec');
-            const mDesc = document.getElementById('m-desc');
-            const mLogo = document.getElementById('m-logo');
-            const mBgImg = document.getElementById('m-bg-img');
+            if (!track || slides.length === 0) return;
 
-            function openModal(data) {
-                mName.innerText = data.nombre;
-                mSpec.innerText = data.especialidad;
-                mDesc.innerText = data.descripcion;
-                mLogo.src = data.img;
-                mBgImg.src = data.img;
+            let currentIndex = 0;
 
-                content.style.borderColor = data.color;
-                mName.style.color = data.color;
-
-                modal.classList.remove('hidden');
-                requestAnimationFrame(() => {
-                    modal.classList.remove('opacity-0');
-                    content.classList.remove('scale-95');
-                    content.classList.add('scale-100');
+            function updateCarousel(index) {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                currentIndex = index;
+                
+                // Mover el contenedor
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                // Actualizar los indicadores
+                dots.forEach((dot, idx) => {
+                    if (idx === currentIndex) {
+                        const activeColor = dot.style.getPropertyValue('--active-color') || '#1f2937';
+                        dot.style.backgroundColor = activeColor;
+                        dot.classList.add('scale-125');
+                        dot.classList.remove('bg-gray-200');
+                    } else {
+                        dot.style.backgroundColor = '';
+                        dot.classList.remove('scale-125');
+                        dot.classList.add('bg-gray-200');
+                    }
                 });
             }
 
-            function closeModal() {
-                modal.classList.add('opacity-0');
-                content.classList.remove('scale-100');
-                content.classList.add('scale-95');
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                }, 300);
-            }
+            // Inicializar
+            updateCarousel(0);
 
-            document.querySelectorAll('.family-node').forEach(node => {
-                node.addEventListener('click', () => {
-                    const data = JSON.parse(node.getAttribute('data-family'));
-                    openModal(data);
+            // Eventos
+            if (prevBtn) prevBtn.addEventListener('click', () => updateCarousel(currentIndex - 1));
+            if (nextBtn) nextBtn.addEventListener('click', () => updateCarousel(currentIndex + 1));
+            
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const idx = parseInt(dot.getAttribute('data-index') || '0', 10);
+                    updateCarousel(idx);
                 });
             });
 
-            closeBtn.addEventListener('click', closeModal);
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
-            });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') closeModal();
+            // Soporte para gestos táctiles (Swipe)
+            let startX = 0;
+            let isSwiping = false;
+
+            track.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isSwiping = true;
+            }, { passive: true });
+
+            track.addEventListener('touchmove', (e) => {
+                if (!isSwiping) return;
+                const diff = e.touches[0].clientX - startX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        updateCarousel(currentIndex - 1);
+                    } else {
+                        updateCarousel(currentIndex + 1);
+                    }
+                    isSwiping = false;
+                }
+            }, { passive: true });
+
+            track.addEventListener('touchend', () => {
+                isSwiping = false;
             });
         });
     </script>
-
 </MainLayout>
+
+<style>
+    .carousel-slide {
+        width: 100%;
+        flex-shrink: 0;
+    }
+    .carousel-track {
+        display: flex;
+        width: 100%;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+</style>
