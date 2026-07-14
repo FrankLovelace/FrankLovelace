@@ -81,12 +81,10 @@ const svgPaths: Record<number, string> = {
                 
                 const modalData = {
                     nombre: f.data.nombre,
-                    lema: f.data.lema,
                     especialidad: f.data.especialidad,
                     descripcion: f.data.descripcion,
                     color: f.data.colorHex,
                     img: img,
-                    fundador: f.data.fundador || 'Desconocido'
                 };
 
                 if (!pos) return null; 
@@ -135,7 +133,6 @@ const svgPaths: Record<number, string> = {
 
             <div class="p-8 text-center">
                 <h2 id="m-name" class="text-3xl font-bold text-gray-900 mb-1">Nombre Familia</h2>
-                <p id="m-lema" class="text-sm font-serif italic text-gray-500 mb-6">"Lema de la familia"</p>
 
                 <div class="grid grid-cols-2 gap-4 mb-6 text-left bg-gray-50 p-4 rounded-lg border border-gray-100">
                     <div>
@@ -143,8 +140,6 @@ const svgPaths: Record<number, string> = {
                         <span id="m-spec" class="text-sm font-bold text-gray-800">Industria</span>
                     </div>
                     <div>
-                        <span class="text-xs font-bold text-gray-400 uppercase block">Fundador</span>
-                        <span id="m-founder" class="text-sm font-bold text-gray-800">Nombre</span>
                     </div>
                 </div>
 
@@ -169,19 +164,15 @@ const svgPaths: Record<number, string> = {
             const closeBtn = document.getElementById('close-modal');
 
             const mName = document.getElementById('m-name');
-            const mLema = document.getElementById('m-lema');
             const mSpec = document.getElementById('m-spec');
             const mDesc = document.getElementById('m-desc');
             const mLogo = document.getElementById('m-logo');
             const mBgImg = document.getElementById('m-bg-img');
-            const mFounder = document.getElementById('m-founder');
 
             function openModal(data) {
                 mName.innerText = data.nombre;
-                mLema.innerText = `"${data.lema}"`;
                 mSpec.innerText = data.especialidad;
                 mDesc.innerText = data.descripcion;
-                mFounder.innerText = data.fundador;
                 mLogo.src = data.img;
                 mBgImg.src = data.img;
 
