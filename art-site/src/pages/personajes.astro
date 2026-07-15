@@ -6,113 +6,320 @@ import path from 'node:path';
 
 const personajes = await getCollection('personajes');
 
-const getPersonajeImage = (id: string, index: number) => {
-    const extensions = ['webp', 'png', 'jpg', 'jpeg'];
-    
+// Resolver la silueta en la carpeta public/siluetas
+const getSilhouettePath = (siluetaName: string | undefined) => {
+    if (!siluetaName) return '/siluetas/default.svg';
+    const extensions = ['svg', 'png', 'webp', 'jpg', 'jpeg'];
     for (const ext of extensions) {
-        const filePath = path.join(process.cwd(), 'public', 'personajes', `${id}.${ext}`);
-        if (fs.existsSync(filePath)) return `/personajes/${id}.${ext}`;
+        const filePath = path.join(process.cwd(), 'public', 'siluetas', `${siluetaName}.${ext}`);
+        if (fs.existsSync(filePath)) {
+            return `/siluetas/${siluetaName}.${ext}`;
+        }
+    }
+    return '/siluetas/default.svg';
+};
+
+// Resolver la imagen de fondo en la carpeta public/fondos
+const getBackgroundPath = (proveniencia: string) => {
+    if (!proveniencia) return '';
+    
+    // Normalizar el nombre del archivo basándonos en la procedencia (ej. "Esmereth" -> "esmereth", "Bosque de Cobre" -> "bosque_de_cobre")
+    const filename = proveniencia.toLowerCase().trim()
+        .replace(/\s+/g, '_')
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Quitar acentos si los hay
+    
+    const extensions = ['png', 'jpg', 'jpeg', 'webp', 'svg'];
+    for (const ext of extensions) {
+        const filePath = path.join(process.cwd(), 'public', 'fondos', `${filename}.${ext}`);
+        if (fs.existsSync(filePath)) {
+            return `/fondos/${filename}.${ext}`;
+        }
     }
     
-    const sizes = [
-        { w: 600, h: 800 }, 
-        { w: 600, h: 600 }, 
-        { w: 600, h: 400 }, 
-        { w: 600, h: 900 }  
-    ];
-    const size = sizes[index % sizes.length];
-    
-    return `https://placehold.co/${size.w}x${size.h}/e2e8f0/475569?text=${id}`;
+    // Fallback si no existe el archivo físico: Unsplash según palabra clave de la procedencia
+    const provLower = proveniencia.toLowerCase();
+    if (provLower.includes('capital') || provLower.includes('cúspide') || provLower.includes('cuspide')) {
+        return "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&auto=format&fit=crop"; // Rascacielos/Capital
+    }
+    if (provLower.includes('bosque') || provLower.includes('cobre') || provLower.includes('naturaleza') || provLower.includes('valle')) {
+        return "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop"; // Bosque
+    }
+    if (provLower.includes('industrial') || provLower.includes('fábrica') || provLower.includes('fabrica') || provLower.includes('distrito')) {
+        return "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&auto=format&fit=crop"; // Estructura industrial
+    }
+    if (provLower.includes('mar') || provLower.includes('costa') || provLower.includes('puerto') || provLower.includes('bahía') || provLower.includes('bahia')) {
+        return "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop"; // Costa
+    }
+    return "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop"; // Genérico tecnológico
 };
 ---
 
 <MainLayout>
-
     <div class="max-w-[1600px] mx-auto px-6 py-12">
         <header class="mb-12 text-center">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Personajes</h1>
-            <p class="text-gray-500">Registro oficial de sujetos de interés.</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Registro de Sujetos</h1>
+            <div class="w-12 h-1 bg-gray-300 mx-auto rounded-full mb-4"></div>
+            <p class="text-gray-500 font-light max-w-xl mx-auto">Compendio de datos y registros biográficos objetivos de Hormenia.</p>
         </header>
 
-        
-        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
+        <!-- Barra de Filtros-->
+        <div class="mb-12 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row gap-6 items-center justify-between">
+            <!-- Buscador -->
+            <div class="relative w-full lg:w-80">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Buscar por nombre o alias..." 
+                    class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                />
+                <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            
+            <!-- Selectores de Filtro -->
+            <div class="flex flex-wrap gap-4 w-full lg:w-auto items-center lg:justify-end">
+                <!-- Filtro por Afiliación -->
+                <div class="flex flex-col gap-1 w-full sm:w-auto flex-1 sm:flex-none">
+                    <label for="family-filter" class="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Afiliación</label>
+                    <select id="family-filter" class="px-3 py-2 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-blue-500 min-w-[160px] cursor-pointer">
+                        <option value="all">Todos los sujetos</option>
+                        <option value="si">Solo de las 7 Familias</option>
+                        <option value="no">Independientes</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Familia Específica -->
+                <div class="flex flex-col gap-1 w-full sm:w-auto flex-1 sm:flex-none">
+                    <label for="specific-family-filter" class="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Familia Específica</label>
+                    <select id="specific-family-filter" class="px-3 py-2 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-blue-500 min-w-[180px] cursor-pointer">
+                        <option value="all">Todas las familias</option>
+                        {Array.from(new Set(personajes.map(p => p.data.familia).filter(Boolean))).map(fam => (
+                            <option value={fam.toLowerCase()}>{fam}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <!-- Filtro por Color -->
+                <div class="flex flex-col gap-1 w-full sm:w-auto flex-1 sm:flex-none">
+                    <label for="color-filter" class="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Color de Casta</label>
+                    <select id="color-filter" class="px-3 py-2 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-blue-500 min-w-[140px] cursor-pointer">
+                        <option value="all">Todos los colores</option>
+                        {Array.from(new Set(personajes.map(p => p.data.color).filter(Boolean))).map(col => (
+                            <option value={col.toLowerCase()}>{col.charAt(0).toUpperCase() + col.slice(1)}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje de sin resultados -->
+        <div id="no-results" class="hidden text-center py-16 text-slate-400 bg-white border border-slate-200 rounded-2xl shadow-sm mb-12">
+            <svg class="w-12 h-12 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <p class="text-base font-light">No se encontraron sujetos con los filtros seleccionados.</p>
+        </div>
+
+        <!-- Grid Estilo Pinterest (Masonry) -->
+        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
             
             {personajes.map((p, index) => {
-                const imageSrc = getPersonajeImage(p.id, index);
+                const bgImage = getBackgroundPath(p.data.proveniencia);
+                const silhouettePath = getSilhouettePath(p.data.silueta);
+                const hasAvatar = p.data.avatar && p.data.avatar.trim() !== '';
                 
                 const charData = {
                     nombre: p.data.nombre,
-                    alias: p.data.alias || 'Desconocido',
+                    alias: p.data.alias || ' ',
                     colorHex: p.data.colorHex,
+                    color: p.data.color,
                     descripcion: p.data.descripcion,
-                    img: imageSrc,
-                    casta: p.data.casta
+                    casta: p.data.casta,
+                    ocupacion: p.data.ocupacion,
+                    proveniencia: p.data.proveniencia,
+                    bgImg: bgImage,
+                    es_visible: p.data.es_visible,
+                    siluetaPath: silhouettePath,
+                    sale_portada: p.data.sale_portada,
+                    afiliacion: p.data['7familias'] === 'si' ? `7 Familias (${p.data.familia})` : 'Independiente',
+                    ref: p.id.toUpperCase().replace('.MD', ''),
+                    avatar: p.data.avatar || ''
                 };
 
                 return (
-                <div 
-                    class="break-inside-avoid mb-4 group cursor-pointer character-card" 
-                    data-character={JSON.stringify(charData)}
-                >
-                    <div class="relative rounded-2xl overflow-hidden bg-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
-                        
-                        <img 
-                            src={imageSrc} 
-                            alt={p.data.nombre}
-                            class="w-full h-auto block" 
-                            loading="lazy"
-                        />
+                    <div 
+                        class="break-inside-avoid group cursor-pointer character-card" 
+                        data-character={JSON.stringify(charData)}
+                        data-color={p.data.color.toLowerCase()}
+                        data-7familias={p.data['7familias']}
+                        data-familia={p.data.familia ? p.data.familia.toLowerCase() : ''}
+                        data-nombre={p.data.nombre.toLowerCase()}
+                        data-alias={p.data.alias ? p.data.alias.toLowerCase() : ''}
+                    >
+                        <div class="rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 border border-slate-200/70 flex flex-col">
+                            
+                            <!-- Caja Visual: Avatar sin transformación, o Fondo de Procedencia + Silueta -->
+                            <div class="w-full aspect-[4/3] sm:aspect-[3/4] relative flex items-end justify-center overflow-hidden bg-slate-50 border-b border-slate-100">
+                                {hasAvatar ? (
+                                    <img 
+                                        src={p.data.avatar} 
+                                        alt={p.data.nombre} 
+                                        class="w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 group-hover:scale-105" 
+                                        loading="lazy" 
+                                    />
+                                ) : (
+                                    <>
+                                        <img src={bgImage} alt={p.data.proveniencia} class="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale" loading="lazy" />
+                                        
+                                        {p.data.es_visible === 'si' && (
+                                            <div class="w-[85%] h-[85%] relative z-10 select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
+                                                 style={`
+                                                    background-color: ${p.data.colorHex};
+                                                    -webkit-mask-image: url('${silhouettePath}');
+                                                    mask-image: url('${silhouettePath}');
+                                                    -webkit-mask-size: contain;
+                                                    -webkit-mask-repeat: no-repeat;
+                                                    -webkit-mask-position: bottom center;
+                                                    mask-size: contain;
+                                                    mask-repeat: no-repeat;
+                                                    mask-position: bottom center;
+                                                 `}
+                                            />
+                                        )}
+                                    </>
+                                )}
+                            </div>
 
-                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] font-bold shadow-sm uppercase tracking-wider text-gray-500 z-10">
-                            {p.data.casta}
-                        </div>
-                        
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                            <div class="text-white transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                <span class="text-xs font-bold uppercase tracking-wider block opacity-80 mb-1" style={`color: ${p.data.colorHex}`}>
-                                    {p.data.alias || 'Sin Alias'}
-                                </span>
-                                <h3 class="text-xl font-bold leading-tight">{p.data.nombre}</h3>
+                            <!-- Ficha Técnica (Estilo Enciclopedia) -->
+                            <div class="p-6 flex flex-col gap-3">
+                                <!-- Cabecera: Referencia y Alias -->
+                                <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 uppercase tracking-widest">
+                                    <span>REG-{p.id.toUpperCase().replace('.MD', '')}</span>
+                                    <span>{p.data.alias && p.data.alias.trim() ? p.data.alias : 'SIN ALIAS'}</span>
+                                </div>
+                                
+                                <!-- Nombre -->
+                                <h3 class="text-xl font-bold text-slate-900 tracking-tight leading-tight group-hover:text-blue-600 transition-colors">
+                                    {p.data.nombre}
+                                </h3>
+                                
+                                <div class="h-px bg-slate-100 w-full my-1"></div>
+                                
+                                <!-- Tabla de Datos -->
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-3 text-xs">
+                                    <div>
+                                        <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wide mb-0.5">Casta</span>
+                                        <span class="font-medium text-slate-800 flex items-center gap-1.5">
+                                            <span class="w-2.5 h-2.5 rounded-full" style={`background-color: ${p.data.colorHex};`}></span>
+                                            {p.data.casta}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wide mb-0.5">Procedencia</span>
+                                        <span class="font-medium text-slate-700 truncate block">{p.data.proveniencia}</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wide mb-0.5">Ocupación</span>
+                                        <span class="font-medium text-slate-700 truncate block">{p.data.ocupacion}</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wide mb-0.5">En Portada</span>
+                                        <span class="font-medium text-slate-700 uppercase">{p.data.sale_portada}</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Afiliación a Dinastía -->
+                                <div class="mt-2 py-2 px-3 rounded-xl bg-slate-50 border border-slate-100 text-[11px]">
+                                    <span class="text-slate-400 uppercase font-semibold tracking-wide text-[8px] block mb-0.5">Afiliación de Dinastía</span>
+                                    <span class="font-medium text-slate-700 truncate block">
+                                        {p.data['7familias'] === 'si' ? `7 Familias (${p.data.familia})` : 'Independiente'}
+                                    </span>
+                                </div>
+                                
+                                <!-- Descripción Breve -->
+                                <p class="text-xs text-slate-500 font-light leading-relaxed mt-2 line-clamp-3">
+                                    {p.data.descripcion}
+                                </p>
                             </div>
                         </div>
                     </div>
-                </div>
-            )})}
+                )
+            })}
 
         </div>
     </div>
 
-    <div id="modal-backdrop" class="fixed inset-0 bg-black/80 z-[150] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4 backdrop-blur-sm">
-        <div id="modal-card" class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col md:flex-row transform scale-95 transition-transform duration-300 h-auto max-h-[90vh]">
+    <!-- Modal Detallado de Expediente (Estilo Hoja de Archivo / Enciclopedia) -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/60 z-[150] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4 backdrop-blur-sm">
+        <div id="modal-card" class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row transform scale-95 transition-transform duration-300 h-auto max-h-[90vh] relative border border-slate-100">
 
-            <div class="w-full md:w-1/2 bg-gray-100 relative min-h-[300px]">
-                <img id="modal-img" src="" class="absolute inset-0 w-full h-full object-cover" />
+            <!-- Lado Visual (Avatar completo, o combinación de Fondo y Silueta) -->
+            <div class="w-full md:w-1/2 bg-slate-50 relative min-h-[300px] flex items-end justify-center overflow-hidden border-b md:border-b-0 md:border-r border-slate-100">
+                <img id="modal-avatar-img" src="" class="absolute inset-0 w-full h-full object-cover hidden" />
+                <img id="modal-bg-img" src="" class="absolute inset-0 w-full h-full object-cover filter grayscale opacity-25" />
+                <div id="modal-silhouette" class="w-[85%] h-[85%] relative z-10 select-none pointer-events-none"></div>
             </div>
-            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col relative bg-white overflow-y-auto">
-                <button id="close-modal-btn" class="absolute top-6 right-6 p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors z-10">
-                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+
+            <!-- Lado de Información -->
+            <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-between bg-white overflow-y-auto max-h-[50vh] md:max-h-[90vh]">
                 <div>
-                    <div class="mb-6">
-                        <span id="modal-alias" class="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mb-2 block">Alias</span>
-                        <h2 id="modal-name" class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">Nombre</h2>
+                    <!-- Botón Cerrar -->
+                    <button id="close-modal-btn" class="absolute top-6 right-6 p-2 bg-slate-50 hover:bg-slate-100 rounded-full transition-colors z-10 cursor-pointer text-slate-400 hover:text-slate-900 border border-slate-100">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                    
+                    <!-- ID y Alias -->
+                    <div class="mb-4 flex items-center justify-between text-[10px] font-mono text-slate-400 uppercase tracking-widest pt-2">
+                        <span id="modal-ref">REG-000</span>
+                        <span id="modal-alias">ALIAS</span>
                     </div>
-                    <div class="flex items-center gap-4 mb-8 border-y border-gray-100 py-4">
-                        <div class="flex items-center gap-2">
-                            <span id="modal-hex-circle" class="w-3 h-3 rounded-full shadow-sm"></span>
-                            <span id="modal-casta" class="text-sm font-bold text-gray-700">Casta</span>
+
+                    <!-- Nombre -->
+                    <h2 id="modal-name" class="text-3xl font-bold text-slate-900 tracking-tight mb-4">Nombre</h2>
+                    
+                    <div class="h-px bg-slate-100 w-full my-4"></div>
+
+                    <!-- Grid de Datos -->
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-4 mb-6 text-xs md:text-sm">
+                        <div>
+                            <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wider mb-1">Casta</span>
+                            <span class="font-medium text-slate-800 flex items-center gap-1.5">
+                                <span id="modal-hex-circle" class="w-2.5 h-2.5 rounded-full shadow-sm"></span>
+                                <span id="modal-casta">Casta</span>
+                                <span id="modal-hex-text" class="text-[10px] font-mono text-slate-400">#HEX</span>
+                            </span>
                         </div>
-                        <div class="h-4 w-px bg-gray-200"></div>
-                        <span id="modal-hex-text" class="text-sm font-mono text-gray-400">#HEX</span>
+                        <div>
+                            <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wider mb-1">Procedencia</span>
+                            <span id="modal-proveniencia" class="font-medium text-slate-700">Procedencia</span>
+                        </div>
+                        <div>
+                            <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wider mb-1">Ocupación / Cargo</span>
+                            <span id="modal-ocupacion" class="font-medium text-slate-700">Ocupación</span>
+                        </div>
+                        <div>
+                            <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wider mb-1">En Portada</span>
+                            <span id="modal-portada" class="font-medium text-slate-700 uppercase">No</span>
+                        </div>
                     </div>
-                    <p id="modal-desc" class="text-gray-600 leading-relaxed text-lg font-light">Descripción...</p>
+
+                    <!-- Afiliación de Familia -->
+                    <div class="mb-6 py-2.5 px-3.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                        <span class="text-slate-400 uppercase font-semibold tracking-wider text-[8px] block mb-0.5">Afiliación de Dinastía</span>
+                        <span id="modal-afiliacion" class="font-semibold text-slate-700">Independiente</span>
+                    </div>
+
+                    <!-- Descripción Detallada -->
+                    <div>
+                        <span class="block text-[9px] uppercase font-semibold text-slate-400 tracking-wider mb-2">Expediente de Registro</span>
+                        <p id="modal-desc" class="text-xs md:text-sm text-slate-600 leading-relaxed font-light">Descripción...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Script de Interactividad y Filtrado -->
     <script is:inline>
         document.addEventListener('DOMContentLoaded', () => {
+            // Elementos del Modal
             const backdrop = document.getElementById('modal-backdrop');
             const card = document.getElementById('modal-card');
             const closeBtn = document.getElementById('close-modal-btn');
@@ -123,17 +330,58 @@ const getPersonajeImage = (id: string, index: number) => {
             const uiHexCircle = document.getElementById('modal-hex-circle');
             const uiCasta = document.getElementById('modal-casta');
             const uiDesc = document.getElementById('modal-desc');
-            const uiImg = document.getElementById('modal-img');
+            const uiOcupacion = document.getElementById('modal-ocupacion');
+            const uiProveniencia = document.getElementById('modal-proveniencia');
+            const uiAfiliacion = document.getElementById('modal-afiliacion');
+            const uiPortada = document.getElementById('modal-portada');
+            const uiRef = document.getElementById('modal-ref');
+            const uiBgImg = document.getElementById('modal-bg-img');
+            const uiAvatarImg = document.getElementById('modal-avatar-img');
+            const uiSilhouette = document.getElementById('modal-silhouette');
 
+            // Abrir Modal
             function openModal(data) {
                 uiName.innerText = data.nombre;
-                uiAlias.innerText = data.alias;
+                uiAlias.innerText = data.alias.trim() ? data.alias : 'SIN ALIAS';
                 uiHexText.innerText = data.colorHex;
                 uiCasta.innerText = data.casta;
                 uiDesc.innerText = data.descripcion;
-                uiImg.src = data.img;
+                uiOcupacion.innerText = data.ocupacion;
+                uiProveniencia.innerText = data.proveniencia;
+                uiAfiliacion.innerText = data.afiliacion;
+                uiPortada.innerText = data.sale_portada;
+                uiRef.innerText = `REG-${data.ref}`;
+                
                 uiHexCircle.style.backgroundColor = data.colorHex;
                 uiAlias.style.color = data.colorHex;
+
+                if (data.avatar && data.avatar.trim() !== '') {
+                    // Mostrar avatar completo sin filtros ni transformaciones
+                    uiAvatarImg.src = data.avatar;
+                    uiAvatarImg.classList.remove('hidden');
+                    uiBgImg.classList.add('hidden');
+                    uiSilhouette.style.display = 'none';
+                } else {
+                    // Mostrar combinación de fondo de procedencia y silueta
+                    uiAvatarImg.classList.add('hidden');
+                    uiBgImg.classList.remove('hidden');
+                    uiBgImg.src = data.bgImg;
+
+                    if (data.es_visible === 'si') {
+                        uiSilhouette.style.display = 'block';
+                        uiSilhouette.style.backgroundColor = data.colorHex;
+                        uiSilhouette.style.webkitMaskImage = `url('${data.siluetaPath}')`;
+                        uiSilhouette.style.maskImage = `url('${data.siluetaPath}')`;
+                        uiSilhouette.style.webkitMaskSize = 'contain';
+                        uiSilhouette.style.maskSize = 'contain';
+                        uiSilhouette.style.webkitMaskRepeat = 'no-repeat';
+                        uiSilhouette.style.maskRepeat = 'no-repeat';
+                        uiSilhouette.style.webkitMaskPosition = 'bottom center';
+                        uiSilhouette.style.maskPosition = 'bottom center';
+                    } else {
+                        uiSilhouette.style.display = 'none';
+                    }
+                }
 
                 backdrop.classList.remove('hidden');
                 requestAnimationFrame(() => {
@@ -143,16 +391,17 @@ const getPersonajeImage = (id: string, index: number) => {
                 });
             }
 
+            // Cerrar Modal
             function closeModal() {
                 backdrop.classList.add('opacity-0');
                 card.classList.remove('scale-100');
                 card.classList.add('scale-95');
                 setTimeout(() => {
                     backdrop.classList.add('hidden');
-                    uiImg.src = ''; 
                 }, 300);
             }
 
+            // Click en Tarjeta
             document.body.addEventListener('click', (e) => {
                 const card = e.target.closest('.character-card');
                 if (card) {
@@ -161,20 +410,85 @@ const getPersonajeImage = (id: string, index: number) => {
                 }
             });
 
-            if(closeBtn) closeBtn.addEventListener('click', closeModal);
-            
-            if(backdrop) {
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (backdrop) {
                 backdrop.addEventListener('click', (e) => {
                     if (e.target === backdrop) closeModal();
                 });
             }
-            
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && backdrop && !backdrop.classList.contains('hidden')) {
                     closeModal();
                 }
             });
+
+            // LÓGICA DE FILTRADO
+            const searchInput = document.getElementById('search-input');
+            const familyFilter = document.getElementById('family-filter');
+            const specificFamilyFilter = document.getElementById('specific-family-filter');
+            const colorFilter = document.getElementById('color-filter');
+            const charCards = document.querySelectorAll('.character-card');
+            const noResults = document.getElementById('no-results');
+
+            function filterCharacters() {
+                const query = searchInput.value.toLowerCase().trim();
+                const familyVal = familyFilter.value;
+                const specificFamilyVal = specificFamilyFilter.value;
+                const colorVal = colorFilter.value;
+
+                let visibleCount = 0;
+
+                charCards.forEach(card => {
+                    const nombre = card.getAttribute('data-nombre') || '';
+                    const alias = card.getAttribute('data-alias') || '';
+                    const is7Fam = card.getAttribute('data-7familias') || '';
+                    const familia = card.getAttribute('data-familia') || '';
+                    const color = card.getAttribute('data-color') || '';
+
+                    const matchesSearch = nombre.includes(query) || alias.includes(query);
+                    const matchesFamilyType = familyVal === 'all' || is7Fam === familyVal;
+                    const matchesSpecificFamily = specificFamilyVal === 'all' || familia === specificFamilyVal;
+                    const matchesColor = colorVal === 'all' || color === colorVal;
+
+                    if (matchesSearch && matchesFamilyType && matchesSpecificFamily && matchesColor) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+            }
+
+            if (searchInput) searchInput.addEventListener('input', filterCharacters);
+            
+            if (familyFilter) {
+                familyFilter.addEventListener('change', () => {
+                    if (familyFilter.value === 'no') {
+                        specificFamilyFilter.value = 'all';
+                        specificFamilyFilter.disabled = true;
+                    } else {
+                        specificFamilyFilter.disabled = false;
+                    }
+                    filterCharacters();
+                });
+            }
+
+            if (specificFamilyFilter) {
+                specificFamilyFilter.addEventListener('change', () => {
+                    if (specificFamilyFilter.value !== 'all') {
+                        familyFilter.value = 'si';
+                    }
+                    filterCharacters();
+                });
+            }
+
+            if (colorFilter) colorFilter.addEventListener('change', filterCharacters);
         });
     </script>
-
 </MainLayout>

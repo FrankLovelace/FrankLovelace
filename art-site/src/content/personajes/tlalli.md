@@ -1,10 +1,15 @@
 ---
 nombre: "Tlalli Valverde"
-alias: "El Artista"
+alias: " "
 casta: "Verde"
 colorHex: "#22c55e"
 descripcion: "Lorem ipsum dolor sit amet"
-esTocado: false
-avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop"
+sale_portada: "no"
+7familias: "no"
+color: "verde"
+ocupacion: "Estudiante"
+es_visible: "no"
+silueta: "default"
+proveniencia: "Esmereth"
 ---
 #detalles de tlalli aca
