@@ -3,7 +3,7 @@ nombre: "Tlalli Valverde"
 alias: " "
 casta: "Verde"
 colorHex: "#22c55e"
-descripcion: "Lorem ipsum dolor sit amet"
+descripcion: "Proveniente de Esmereth"
 sale_portada: "no"
 7familias: "no"
 color: "verde"
@@ -12,4 +12,4 @@ es_visible: "no"
 silueta: "default"
 proveniencia: "Esmereth"
 ---
-#detalles de tlalli aca
+#
