@@ -1,0 +1,15 @@
+---
+nombre: "Diana Belmont "
+lema: "'No podemos controlar lo que somos, solo lo que hacemos con ello'"
+casta: "Súpertocado"
+colorHex: "#789EFA"
+descripcion: "Diana Belmont es la hija única de Roman Belmont y Fernanda Añil, egresada del eden con la mejor calificación de su generación. Diana es percibida como una persona misteriosa aunque siempre termina ayudando a quienes tienen el gusto de llamarla una amiga. Está casada con su carrera desde que era pequeña, Hobbie: Leer y Fantasear"
+sale_portada: "si"
+7familias: "si"
+familia: "Belmont"
+color: "azul"
+ocupacion: "Estudiante"
+es_visible: "si"
+silueta: "mujerFormal"
+proveniencia: "Cuspide"
+---
