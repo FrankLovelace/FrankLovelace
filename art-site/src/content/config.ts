@@ -5,7 +5,7 @@ const personajes = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/content/personajes" }),
     schema: z.object({
         nombre: z.string(),
-        alias: z.string().optional(),
+        lema: z.string().optional(),
         casta: z.string(), 
         colorHex: z.string(), 
         descripcion: z.string(), 
