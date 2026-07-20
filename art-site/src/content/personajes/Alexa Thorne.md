@@ -1,0 +1,15 @@
+---
+nombre: "Alexa Thorne"
+lema: "'Nunca te averguences de quien eres'"
+casta: "Súpertocada"
+colorHex: "#789EFA"
+descripcion: "Alexa Thorne es la cara de cualquier noticia importante en Hormenia, egresada de la Universidad metropolitana de Hormenia con honores en la Licenciatura en Comunicación para posteriormente obtener su maestría en Comunicación Audiovisual por la Universidad Autónoma de Cúspide Celeste. Es la principal escritora del periodico 'The Hormenia Times' y ha sido un pilar fundamental para su consodilación como el periódico Número #1 de Hormenia, Hobbie: Fotografear"
+sale_portada: "si"
+7familias: "si"
+familia: "Thorne"
+color: "azul"
+ocupacion: "Reportera"
+es_visible: "si"
+silueta: "mujer"
+proveniencia: "cuspide"
+---
