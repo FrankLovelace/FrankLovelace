@@ -1,1 +1,1 @@
-#en el ultimo commit me estuve peleando con tailwind y por eso no puse el proceso de crear el acordeon y los menús de hamburguesa
+Es una web de informacion para mi libro :3
