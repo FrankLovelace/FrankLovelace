@@ -12,4 +12,5 @@ ocupacion: "Estudiante"
 es_visible: "si"
 silueta: "hombreInformal"
 proveniencia: "Cuspide"
+avatar: "/H.png"
 ---

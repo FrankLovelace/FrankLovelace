@@ -11,4 +11,5 @@ ocupacion: "Estudiante"
 es_visible: "si"
 silueta: "hombre"
 proveniencia: "Cuspide"
+avatar: "/Aq.png"
 ---

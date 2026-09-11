@@ -52,6 +52,34 @@ const getBackgroundPath = (proveniencia: string) => {
     }
     return "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600&auto=format&fit=crop"; // Genérico tecnológico
 };
+
+// Resolver la imagen avatar (prioridad: campo avatar o coincidencia automática en public/)
+const getCharacterAvatar = (p: any) => {
+    if (p.data.avatar && p.data.avatar.trim() !== '') return p.data.avatar;
+    
+    const name = p.data.nombre.toLowerCase().trim();
+    if (name.includes('harry')) return '/H.png';
+    if (name.includes('aqua')) return '/Aq.png';
+    if (name.includes('diana')) return '/diana.png';
+    if (name.includes('alexa')) return '/Al.png';
+    
+    const cleanId = p.id.replace(/\.md$/i, '').trim();
+    const extensions = ['png', 'jpg', 'jpeg', 'webp'];
+    for (const ext of extensions) {
+        if (fs.existsSync(path.join(process.cwd(), 'public', `${cleanId}.${ext}`))) {
+            return `/${cleanId}.${ext}`;
+        }
+    }
+    return '';
+};
+
+// Generar slug consistente para enlaces directos
+const getSlug = (name: string) => {
+    return name.toLowerCase().trim()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+};
 ---
 
 <MainLayout>
@@ -117,13 +145,15 @@ const getBackgroundPath = (proveniencia: string) => {
             <p class="text-base font-light">No se encontraron sujetos con los filtros seleccionados.</p>
         </div>
 
-        <!-- Grid Estilo Pinterest (Masonry) -->
-        <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+        <!-- Grid de Tarjetas (CSS Grid 4 columnas consistente sin glitch) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             
             {personajes.map((p, index) => {
                 const bgImage = getBackgroundPath(p.data.proveniencia);
                 const silhouettePath = getSilhouettePath(p.data.silueta);
-                const hasAvatar = p.data.avatar && p.data.avatar.trim() !== '';
+                const avatarSrc = getCharacterAvatar(p);
+                const hasAvatar = avatarSrc !== '';
+                const slug = getSlug(p.data.nombre);
                 
                 const charData = {
                     nombre: p.data.nombre,
@@ -140,26 +170,29 @@ const getBackgroundPath = (proveniencia: string) => {
                     sale_portada: p.data.sale_portada,
                     afiliacion: p.data['7familias'] === 'si' ? `7 Familias (${p.data.familia})` : 'Independiente',
                     ref: p.id.toUpperCase().replace('.MD', ''),
-                    avatar: p.data.avatar || ''
+                    avatar: avatarSrc,
+                    slug: slug
                 };
 
                 return (
                     <div 
-                        class="break-inside-avoid group cursor-pointer character-card" 
+                        id={slug}
+                        class="group cursor-pointer character-card" 
                         data-character={JSON.stringify(charData)}
+                        data-slug={slug}
                         data-color={p.data.color.toLowerCase()}
                         data-7familias={p.data['7familias']}
                         data-familia={p.data.familia ? p.data.familia.toLowerCase() : ''}
                         data-nombre={p.data.nombre.toLowerCase()}
                         data-lema={p.data.lema ? p.data.lema.toLowerCase() : ''}
                     >
-                        <div class="rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 border border-slate-200/70 flex flex-col">
+                        <div class="rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 border border-slate-200/70 flex flex-col h-full">
                             
                             <!-- Caja Visual: Avatar sin transformación, o Fondo de Procedencia + Silueta -->
                             <div class="w-full aspect-[4/3] sm:aspect-[3/4] relative flex items-end justify-center overflow-hidden bg-slate-50 border-b border-slate-100">
                                 {hasAvatar ? (
                                     <img 
-                                        src={p.data.avatar} 
+                                        src={avatarSrc} 
                                         alt={p.data.nombre} 
                                         class="w-full h-full object-cover select-none pointer-events-none transition-transform duration-500 group-hover:scale-105" 
                                         loading="lazy" 
@@ -188,7 +221,7 @@ const getBackgroundPath = (proveniencia: string) => {
                             </div>
 
                             <!-- Ficha Técnica (Estilo Enciclopedia) -->
-                            <div class="p-6 flex flex-col gap-3">
+                            <div class="p-6 flex flex-col gap-3 flex-1 justify-between">
                                 <!-- Cabecera: Referencia -->
                                 <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 uppercase tracking-widest">
                                     <span>{p.id.toUpperCase().replace('.MD', '')}</span>
@@ -506,6 +539,35 @@ const getBackgroundPath = (proveniencia: string) => {
             }
 
             if (colorFilter) colorFilter.addEventListener('change', filterCharacters);
+
+            // Apertura automática y scroll suave si se navega desde otra página (/ o enlaces externos)
+            function checkUrlTarget() {
+                const params = new URLSearchParams(window.location.search);
+                const targetSlug = params.get('personaje') || params.get('id') || window.location.hash.replace('#', '');
+                
+                if (targetSlug) {
+                    const cleanSlug = targetSlug.toLowerCase().trim();
+                    const targetCard = document.getElementById(cleanSlug) || 
+                                       document.querySelector(`[data-slug="${cleanSlug}"]`) ||
+                                       Array.from(document.querySelectorAll('.character-card')).find(c => {
+                                           const nombre = c.getAttribute('data-nombre') || '';
+                                           return nombre.includes(cleanSlug) || cleanSlug.includes(nombre);
+                                       });
+                    
+                    if (targetCard) {
+                        setTimeout(() => {
+                            targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            const rawData = targetCard.getAttribute('data-character');
+                            if (rawData) {
+                                openModal(JSON.parse(rawData));
+                            }
+                        }, 250);
+                    }
+                }
+            }
+
+            checkUrlTarget();
+            window.addEventListener('hashchange', checkUrlTarget);
         });
     </script>
 </MainLayout>

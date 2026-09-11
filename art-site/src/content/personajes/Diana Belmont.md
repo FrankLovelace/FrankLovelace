@@ -12,4 +12,5 @@ ocupacion: "Estudiante"
 es_visible: "si"
 silueta: "mujerFormal"
 proveniencia: "Cuspide"
+avatar: "/diana.png"
 ---

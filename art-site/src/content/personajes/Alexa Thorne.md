@@ -12,4 +12,5 @@ ocupacion: "Reportera"
 es_visible: "si"
 silueta: "mujer"
 proveniencia: "cuspide"
+avatar: "/Al.png"
 ---
