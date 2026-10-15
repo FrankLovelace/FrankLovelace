@@ -1,13 +1,14 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { drawDiffraction } from './diffraction';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ZMAX = 22; 
 const LN_ZMAX = Math.log(ZMAX);
-const SEG_VH = 160; 
-const DWELL = 0.3; 
+const SEG_VH = 110; // scroll length of one level
+const DWELL = 0.2; // part of each level that holds still before the zoom starts
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -28,8 +29,6 @@ interface SceneInfo {
 export interface JourneyNav {
   /** Document scroll position (px) at which each level sits. */
   anchors(): number[];
-  /** Hold off scroll snapping while the page is dragged from the ruler. */
-  setScrubbing(on: boolean): void;
 }
 
 interface JourneyOptions {
@@ -113,7 +112,6 @@ function initStatic(
 
   return {
     anchors: () => sceneEls.map((el) => el.getBoundingClientRect().top + scrollY),
-    setScrubbing() {},
   };
 }
 
@@ -182,8 +180,11 @@ function initZoom(
   }));
   const ctx = canvas?.getContext('2d') ?? null;
 
-  const drawDepth = (T: number, grayness: number) => {
+  // what the depth canvas shows; apply() updates it, the frame loop draws it
+  const view = { T: 0, grayness: 0, p: 0, fx: 0, fy: 0, dirty: true };
+  const drawDepth = (energy: number) => {
     if (!ctx || !canvas) return;
+    const { T, grayness } = view;
     const dpr = Math.min(devicePixelRatio || 1, 1.5);
     if (canvas.width !== Math.round(W * dpr)) {
       canvas.width = Math.round(W * dpr);
@@ -212,6 +213,7 @@ function initZoom(
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
       ctx.fill();
     }
+    drawDiffraction({ ctx, W, H, cx: view.fx, cy: view.fy, energy, grayness, p: view.p, T });
   };
 
   const apply = (T: number) => {
@@ -296,26 +298,31 @@ function initZoom(
     setLevelUi(level, mag, grayness);
     if (hud.lens) hud.lens.textContent = lensNames[p > 0.5 ? seg + 1 : seg] ?? '';
 
-    drawDepth(T, grayness);
+    Object.assign(view, { T, grayness, p, fx: Fx, fy: Fy, dirty: true });
   };
 
-  measure();
+  // Zoom speed (levels per second) drives the diffraction pattern: quick to build up,
+  // slower to fade, so it rings on for a moment after the scroll stops.
+  let energy = 0;
+  let lastT = 0;
+  gsap.ticker.add((_time, deltaMs) => {
+    const dt = Math.min(deltaMs / 1000, 0.1) || 0.016;
+    const speed = Math.abs(view.T - lastT) / dt;
+    lastT = view.T;
+    const target = clamp(speed / 0.8, 0, 1);
+    energy += (target - energy) * (1 - Math.exp(-(target > energy ? 14 : 3) * dt));
+    if (energy < 0.002) energy = 0;
+    if (!view.dirty && energy === 0) return;
+    view.dirty = energy > 0; // keep drawing until the pattern has faded
+    drawDepth(energy);
+  });
 
-  // the scroll ruler drags the page directly; snapping waits until it lets go
-  let scrubbing = false;
-  const nearest = (v: number) => Math.round(v * (N - 1)) / (N - 1);
+  measure();
 
   const trigger = ScrollTrigger.create({
     trigger: track,
     start: 'top top',
     end: 'bottom bottom',
-    scrub: 0.6,
-    snap: {
-      snapTo: (v: number) => (scrubbing ? v : nearest(v)),
-      duration: { min: 0.25, max: 0.7 },
-      delay: 0.12,
-      ease: 'power2.inOut',
-    },
     onUpdate: (self) => apply(self.progress * (N - 1)),
     onRefresh: (self) => {
       measure();
@@ -364,8 +371,5 @@ function initZoom(
 
   return {
     anchors: () => scenes.map((_, i) => levelTop(i)),
-    setScrubbing(on) {
-      scrubbing = on;
-    },
   };
 }

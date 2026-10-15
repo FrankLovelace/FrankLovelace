@@ -56,9 +56,13 @@ so atoms appear everywhere they belong (a corner atom shows at all 8 corners):
 - `src/scripts/ruler.ts` — scroll ruler on the right edge, after getartcraft.com: ticks
   at document scale (one per 1 % of the page) scroll 1:1 while the needle travels down the
   rail; hovering it zooms out to a map of the whole page and the level names fly from the
-  rail to horizontal labels. Click or drag to move; it settles on the nearest level. Desktop
+  rail to horizontal labels; the current level's name flips into the top-right corner. Click
+  or drag to move (nothing snaps: the page stays where you leave it). Desktop
   with a fine pointer only (`data-ruler="on"`, set in `Base.astro`); otherwise the dot
   navigation stays.
+- `src/scripts/diffraction.ts` — drawn on the depth canvas while the magnification is
+  changing (strength follows the zoom speed): a chromatic Airy pattern in the light zone
+  (ring radius ∝ λ), FCC Debye–Scherrer rings with [001] Bragg spots in the electron zone.
 - Mobile (<900px), `prefers-reduced-motion`, and no-JS all get a fully readable
   stacked layout (`data-journey="static"`), with reveal-on-scroll only.
 - The pro/pop color toggle (`data-mode`) deliberately stops mattering below the

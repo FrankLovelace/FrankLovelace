@@ -259,23 +259,15 @@ export function initRuler(nav: JourneyNav | null): void {
     introFlip: 0, // the first level's name flips into place once the page has loaded
   };
 
-  const setScrubbing = (on: boolean) => nav.setScrubbing(on);
-
   const jumpTo = (y: number) => {
     const to = Math.max(0, Math.min(geom.max, y));
     const dist = Math.abs(to - scrollY);
     st.chase = null;
     st.tween = { from: scrollY, to, t0: performance.now(), dur: C.jumpDur * (0.4 + 0.6 * Math.min(1, dist / (2.5 * geom.vh))) };
-    setScrubbing(true);
   };
-
-  // the journey snaps to its levels, so a click on the rail lands on the nearest one
-  const nearestLevel = (y: number) =>
-    words.reduce((best, w) => (Math.abs(w.scroll - y) < Math.abs(best - y) ? w.scroll : best), words[0]?.scroll ?? y);
 
   const cancelMotion = () => {
     if (st.dragging) return;
-    if (st.tween || st.chase !== null) setScrubbing(false);
     st.tween = null;
     st.chase = null;
   };
@@ -313,14 +305,11 @@ export function initRuler(nav: JourneyNav | null): void {
     st.dragMoved = 0;
     st.dragging = true;
     st.tween = null;
-    setScrubbing(true);
     rail.setPointerCapture(e.pointerId);
   });
   const release = (e: PointerEvent) => {
     if (!st.dragging) return;
     st.dragging = false;
-    // settle on the nearest level (the journey's own snap was held off during the drag)
-    if (st.chase !== null) st.chase = nearestLevel(st.chase);
     const r = rail.getBoundingClientRect();
     const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
     if (!inside) {
@@ -332,7 +321,7 @@ export function initRuler(nav: JourneyNav | null): void {
   rail.addEventListener('pointercancel', release);
   rail.addEventListener('click', (e) => {
     if (st.dragMoved > 4) return;
-    jumpTo(nearestLevel(railFraction(e.clientY) * geom.max));
+    jumpTo(railFraction(e.clientY) * geom.max);
     gsap.fromTo(ghost, { opacity: 1 }, { opacity: C.ghostAlpha, duration: 0.45 });
   });
 
@@ -375,18 +364,12 @@ export function initRuler(nav: JourneyNav | null): void {
       const k = 1 - Math.pow(1 - C.dragLerp, dt * 60);
       const y = scrollY + (st.chase - scrollY) * k;
       scrollTo({ top: y, behavior: 'instant' });
-      if (!st.dragging && Math.abs(st.chase - y) < 1) {
-        st.chase = null;
-        setScrubbing(false);
-      }
+      if (!st.dragging && Math.abs(st.chase - y) < 1) st.chase = null;
     } else if (st.tween) {
       const tw = st.tween;
       const p = clamp01((now - tw.t0) / 1000 / tw.dur);
       scrollTo({ top: tw.from + (tw.to - tw.from) * easeOutExpo(p), behavior: 'instant' });
-      if (p >= 1) {
-        st.tween = null;
-        setScrubbing(false);
-      }
+      if (p >= 1) st.tween = null;
     }
 
     const y = scrollY;

@@ -701,6 +701,7 @@ html[data-journey='zoom'] .depth-field {
   bottom: 26px;
   left: 50%;
   transform: translateX(-50%);
+  white-space: nowrap;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.14em;
@@ -1228,6 +1229,21 @@ html[data-journey='static'] .hud__lens {
   }
   .levels span.label {
     display: none;
+  }
+  /* level dots: a horizontal pill in the bottom-right corner, clear of the content column */
+  .levels {
+    top: auto;
+    bottom: 14px;
+    transform: none;
+    display: flex;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: color-mix(in oklab, var(--chrome-bg), transparent 20%);
+    backdrop-filter: blur(6px);
+  }
+  .hero__hint {
+    bottom: 96px;
   }
   .sample {
     width: min(260px, 70vw);
