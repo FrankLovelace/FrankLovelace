@@ -42,6 +42,15 @@ const C = {
   stagger: 0.16, // per-letter delay fraction in the zoom morph
   arc: 28, // how far each letter's path bows toward the page mid-flight
   ridingAlpha: 0.35,
+  // top stack: the current level's name flips off the rail into the top-right corner,
+  // the ones already passed shrink into a compact pile above it
+  headingPx: 34,
+  pilePx: 15,
+  pileAlpha: 0.35,
+  topPad: 18, // below the topbar
+  slot: 20, // vertical spacing in the pile
+  currentGap: 26, // extra gap between the pile and the current heading
+  flipZone: 0.3, // last fraction of the scroll into a level over which its name flips
   mapAlpha: 0.85,
   yieldPad: 24, // tick numbers fade out of a riding word's way within this distance
 };
@@ -49,6 +58,22 @@ const C = {
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
+
+type Pose = { x: number; y: number; rot: number; sc: number; a: number };
+
+/** Quadratic flight from p to q whose path bows toward the page (left of the rail). */
+const fly = (p: Pose, q: Pose, d: number): Pose => {
+  const b = 1 - d;
+  const cx = (p.x + q.x) / 2 - C.arc;
+  const cy = (p.y + q.y) / 2;
+  return {
+    x: b * b * p.x + 2 * b * d * cx + d * d * q.x,
+    y: b * b * p.y + 2 * b * d * cy + d * d * q.y,
+    rot: p.rot + (q.rot - p.rot) * d,
+    sc: p.sc + (q.sc - p.sc) * d,
+    a: p.a + (q.a - p.a) * d,
+  };
+};
 
 interface Metrics {
   adv: number[]; // advance of each letter, in em
@@ -63,6 +88,7 @@ interface Word {
   m: Metrics | null;
   docY: number; // document y the needle points at when this level is on screen
   scroll: number; // scroll position of the level
+  zone: number; // scroll px over which the name flips into the top stack
   hover: number;
   flashUntil: number;
 }
@@ -149,6 +175,11 @@ export function initRuler(nav: JourneyNav | null): void {
   }
 
   // ---- level names
+  // frosted pool behind the top stack so it reads over any scene
+  const pool = document.createElement('div');
+  pool.className = 'ruler-words__pool';
+  pool.setAttribute('aria-hidden', 'true');
+  wordsHost.appendChild(pool);
   const jumpLabel = rail.dataset.jumpLabel ?? '';
   const names = [...document.querySelectorAll('[data-level-link] .label')].map((el) => el.textContent?.trim() ?? '');
   const words: Word[] = names.map((label, i) => {
@@ -167,7 +198,7 @@ export function initRuler(nav: JourneyNav | null): void {
       wordsHost.appendChild(s);
       return s;
     });
-    return { label, letters, hit, m: null, docY: 0, scroll: 0, hover: 0, flashUntil: 0 };
+    return { label, letters, hit, m: null, docY: 0, scroll: 0, zone: 1, hover: 0, flashUntil: 0 };
   });
 
   // ---- geometry
@@ -182,6 +213,7 @@ export function initRuler(nav: JourneyNav | null): void {
     words.forEach((w, i) => {
       w.scroll = Math.min(anchors[i] ?? 0, geom.max);
       w.docY = (w.scroll / geom.max) * geom.docH;
+      w.zone = i > 0 ? Math.max(1, C.flipZone * (w.scroll - words[i - 1].scroll)) : 1;
     });
   };
   const remeasure = () => {
@@ -224,6 +256,7 @@ export function initRuler(nav: JourneyNav | null): void {
     chase: null as number | null, // drag: the page chases this scroll position
     tween: null as { from: number; to: number; t0: number; dur: number } | null,
     hovered: -1,
+    introFlip: 0, // the first level's name flips into place once the page has loaded
   };
 
   const setScrubbing = (on: boolean) => nav.setScrubbing(on);
@@ -329,6 +362,8 @@ export function initRuler(nav: JourneyNav | null): void {
     },
   );
 
+  gsap.to(st, { introFlip: 1, duration: 1.1, delay: C.introAt + 0.5, ease: 'none' });
+
   // ---- frame
   let zoomWrote = false;
   const frame = (_time: number, deltaMs: number) => {
@@ -402,43 +437,63 @@ export function initRuler(nav: JourneyNav | null): void {
       ghost.style.opacity = String(C.ghostAlpha * (0.2 + 0.8 * Z));
     } else ghost.style.opacity = '0';
 
-    // level names: riding the rail vertically ↔ horizontal labels on the zoomed map
+    // level names. A letter is in one of three places: riding the rail (vertical), in the top
+    // stack (horizontal, top-right corner) or on the zoomed map. It moves between them one
+    // letter at a time.
     const spans: { top: number; bottom: number; k: number }[] = [];
     const railX = geom.vw - C.railW / 2;
     const rideScale = C.ridingPx / C.fontPx;
     const mapScale = C.mapPx / C.fontPx;
+    const headScale = C.headingPx / C.fontPx;
+    const pileScale = C.pilePx / C.fontPx;
+    const stackTop = navH + C.topPad;
     const O = (n: number) => 1 + (n - 1) * C.stagger;
+    // right-aligned beside the rail, centered on row y
+    const beside = (m: Metrics, e: number, rowY: number, sc: number, a: number): Pose => {
+      const width = m.total * C.fontPx * sc;
+      const s = (m.cum[e] + m.adv[e] / 2) * C.fontPx * sc;
+      return { x: geom.vw - (C.railW + C.textPad + width - s), y: rowY, rot: 0, sc, a };
+    };
+
+    const flips = words.map((w, i) => (i === 0 ? st.introFlip : clamp01((y - (w.scroll - w.zone)) / w.zone)));
+    let landed = 0; // names fully in the stack (always the first ones)
+    let inFlight = 0; // sum of partial flips: the current heading shrinks as the next one arrives
+    for (const fl of flips) fl >= 1 ? landed++ : (inFlight += fl);
+    pool.style.opacity = String(Math.max(...flips) * (1 - W));
+
     words.forEach((w, i) => {
       const m = w.m;
       if (!m) return;
       const n = m.adv.length;
+      const flip = flips[i];
       const mapY = base + (w.docY / geom.docH) * span;
       const rideLen = m.total * C.ridingPx;
       // the word hangs from its tick like the needle from the rail: below it at the top of the
-      // page, above it at the bottom, so the current level's name always stays on screen
+      // page, above it at the bottom
       const top = w.docY - y + g - rideLen * (w.docY / geom.docH);
-      if (Z < 1) spans.push({ top, bottom: top + rideLen, k: 1 - W });
+      if (Z < 1 && flip < 1) spans.push({ top, bottom: top + rideLen, k: (1 - W) * (1 - flip) });
       w.hover += ((st.hovered === i ? 1 : 0) - w.hover) * (1 - Math.exp(-dt / 0.08));
       const flash = clamp01((w.flashUntil - now) / 350);
+      // the newest landed name is the full-size current heading until the next one flies in
+      const t = i === landed - 1 ? Math.min(1, inFlight) : 1;
+      const slotY = stackTop + i * C.slot;
       let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity, maxA = 0;
       for (let e = 0; e < n; e++) {
-        // riding: rotated -90°, read bottom to top
-        const hx = railX;
-        const hy = top + (m.total - m.cum[e] - m.adv[e] / 2) * C.ridingPx;
-        const ha = C.ridingAlpha * clamp01((hy - navH + 10) / 40); // fade under the topbar
-        // map: right-aligned beside the rail, at the level's place in the page
-        const s = (m.cum[e] + m.adv[e] / 2) * C.mapPx;
-        const mx = geom.vw - (C.railW + C.textPad + m.total * C.mapPx - s);
-        const my = mapY;
-        const d = easeInOutCubic(clamp01(Z * O(n) - e * C.stagger));
-        const cx = (hx + mx) / 2 - C.arc;
-        const cy = (hy + my) / 2;
-        const b = 1 - d;
-        const px = b * b * hx + 2 * b * d * cx + d * d * mx;
-        const py = b * b * hy + 2 * b * d * cy + d * d * my;
-        const rot = -90 * b;
-        const sc = rideScale + (mapScale - rideScale) * d;
-        const a = ha + (C.mapAlpha - ha) * d;
+        const ry = top + (m.total - m.cum[e] - m.adv[e] / 2) * C.ridingPx;
+        const riding: Pose = { x: railX, y: ry, rot: -90, sc: rideScale, a: C.ridingAlpha * clamp01((ry - navH + 10) / 40) };
+        let pose = riding;
+        if (flip >= 1) {
+          pose = beside(m, e, slotY + C.currentGap * (1 - t), headScale + (pileScale - headScale) * t, 1 - (1 - C.pileAlpha) * t);
+        } else if (flip > 0) {
+          // the top letter leaves the rail first, so the word unrolls into the corner
+          const d = easeInOutCubic(clamp01(flip * O(n) - (n - 1 - e) * C.stagger));
+          pose = fly(riding, beside(m, e, slotY + C.currentGap, headScale, 1), d);
+        }
+        if (Z > 0) {
+          const d = easeInOutCubic(clamp01(Z * O(n) - e * C.stagger));
+          pose = fly(pose, beside(m, e, mapY, mapScale, C.mapAlpha), d);
+        }
+        const { x: px, y: py, rot, sc, a } = pose;
         const el = w.letters[e];
         el.style.transform = `translate3d(${px}px, ${py}px, 0) translate(-50%, -50%) rotate(${rot}deg) scale(${sc})`;
         const j = a + (1 - a) * w.hover;
@@ -447,11 +502,11 @@ export function initRuler(nav: JourneyNav | null): void {
         if (a > maxA) maxA = a;
         const hw = (m.adv[e] * C.fontPx * sc) / 2 + 2;
         const hh = (C.fontPx * sc) / 2 + 2;
-        const [rx, ry] = Math.abs(rot) > 45 ? [hh, hw] : [hw, hh];
-        x0 = Math.min(x0, px - rx);
-        x1 = Math.max(x1, px + rx);
-        y0 = Math.min(y0, py - ry);
-        y1 = Math.max(y1, py + ry);
+        const [bx, by] = Math.abs(rot) > 45 ? [hh, hw] : [hw, hh];
+        x0 = Math.min(x0, px - bx);
+        x1 = Math.max(x1, px + bx);
+        y0 = Math.min(y0, py - by);
+        y1 = Math.max(y1, py + by);
       }
       if (isFinite(x0)) {
         const h = w.hit.style;

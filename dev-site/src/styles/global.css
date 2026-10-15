@@ -223,16 +223,61 @@ p {
 .ctrl:hover {
   border-color: var(--chrome-accent);
 }
+/* color mode = filter selector: a solid accent (professional) over an emission spectrum
+   (color pop). Switching shrinks the solid away and spins the spectrum half a turn. */
 .mode-dot {
-  width: 9px;
-  height: 9px;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  flex: none;
   border-radius: 50%;
-  background: var(--accent);
-  transition: background 0.3s;
+  background: conic-gradient(from 0deg, #7c3aed, #2563eb, #06b6d4, #22d3ee, #a855f7, #7c3aed);
+  box-shadow: 0 0 0 1.5px color-mix(in oklab, var(--chrome-bg), transparent 10%),
+    0 0 0 2.5px var(--chrome-line);
+  transition: rotate 0.7s var(--ease-out), filter 0.3s, scale 0.2s;
 }
-/* past the SEM line the toggle visibly stops doing anything */
+.mode-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--pro-accent);
+  transition: scale 0.45s var(--ease-out), opacity 0.3s;
+}
+html[data-mode='pop'] .mode-dot {
+  rotate: 180deg;
+}
+html[data-mode='pop'] .mode-dot::after {
+  scale: 0;
+  opacity: 0;
+}
+.mode-toggle:hover .mode-dot {
+  scale: 1.2;
+}
+/* past the SEM line the toggle visibly stops doing anything: electrons carry no color */
 html[data-zone='gray'] .mode-dot {
-  background: var(--gray-ink-2);
+  filter: grayscale(1) brightness(0.8);
+}
+
+/* split-flap label: each letter rolls to the new word, left to right */
+.mode-label {
+  display: inline-flex;
+  height: 1.2em;
+  line-height: 1.2em;
+  overflow: hidden;
+  white-space: pre;
+  transition: width 0.35s var(--ease-out);
+}
+.mode-label .flap {
+  display: inline-flex;
+  flex-direction: column;
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.2, 1) var(--d, 0ms);
+}
+.mode-label .flap > span {
+  height: 1.2em;
+}
+.mode-label.is-rolling .flap {
+  transform: translateY(-1.2em);
 }
 
 /* ---------- magnification HUD ---------- */
@@ -329,7 +374,8 @@ html[data-ruler='on'] {
 html[data-ruler='on']::-webkit-scrollbar {
   display: none;
 }
-html[data-ruler='on'] .levels {
+html[data-ruler='on'] .levels,
+html[data-ruler='on'] .hud__lens {
   display: none;
 }
 html[data-ruler='on'] .topbar {
@@ -474,6 +520,18 @@ html[data-ruler='on'] .scene {
   white-space: pre;
   will-change: transform;
   text-shadow: 0 0 4px var(--chrome-bg), 0 0 10px var(--chrome-bg);
+}
+.ruler-words__pool {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 290px;
+  opacity: 0;
+  backdrop-filter: blur(9px);
+  background: color-mix(in srgb, var(--chrome-bg) 80%, transparent);
+  --pool: radial-gradient(100% 100% at 100% 0%, black 38%, rgba(0, 0, 0, 0.82) 56%, rgba(0, 0, 0, 0.48) 72%, rgba(0, 0, 0, 0.2) 86%, rgba(0, 0, 0, 0.05) 94%, transparent 97%);
+  mask-image: var(--pool);
 }
 .ruler-words__hit {
   position: absolute;
