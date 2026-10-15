@@ -1,6 +1,7 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { initMagSlider, type MagSlider, type JourneyNav } from './mag-slider';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,8 +64,9 @@ export function initJourney(opts: JourneyOptions = {}): void {
     return `${Number(value.toPrecision(2))} ${unit}`;
   };
 
+  let slider: MagSlider | null = null;
   let lastLevel = -1;
-  const setLevelUi = (level: number, mag: number, grayness: number) => {
+  const setLevelUi = (level: number, mag: number, grayness: number, T: number = level) => {
     if (hud.mag) hud.mag.textContent = formatMag(mag);
     if (hud.bar) hud.bar.textContent = formatBar(mag);
     if (hud.lens) hud.lens.textContent = lensNames[level] ?? '';
@@ -73,23 +75,28 @@ export function initJourney(opts: JourneyOptions = {}): void {
     hud.links.forEach((a, i) =>
       i === level ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'),
     );
+    slider?.update(T, `${formatMag(mag)} · ${lensNames[level] ?? ''}`);
     if (level !== lastLevel) {
       lastLevel = level;
       opts.onLevel?.(level);
     }
   };
 
-  if (html.dataset.journey === 'zoom') {
-    initZoom(root, sceneEls, setLevelUi, formatMag, formatBar, hud, lensNames, html);
-  } else {
-    initStatic(sceneEls, setLevelUi);
-  }
+  const nav =
+    html.dataset.journey === 'zoom'
+      ? initZoom(root, sceneEls, setLevelUi, hud, lensNames)
+      : initStatic(sceneEls, setLevelUi);
+  slider = initMagSlider(
+    sceneEls.length,
+    sceneEls.findIndex((el) => el.dataset.zone === 'gray'),
+    nav,
+  );
 }
 
 function initStatic(
   sceneEls: HTMLElement[],
   setLevelUi: (level: number, mag: number, grayness: number) => void,
-): void {
+): JourneyNav {
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -104,18 +111,24 @@ function initStatic(
     { rootMargin: '-35% 0px -35% 0px', threshold: 0 },
   );
   sceneEls.forEach((el) => io.observe(el));
+
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return {
+    live: false,
+    seek(T, smooth) {
+      const el = sceneEls[clamp(Math.round(T), 0, sceneEls.length - 1)];
+      el.scrollIntoView({ behavior: smooth && !calm ? 'smooth' : 'auto', block: 'start' });
+    },
+  };
 }
 
 function initZoom(
   root: HTMLElement,
   sceneEls: HTMLElement[],
-  setLevelUi: (level: number, mag: number, grayness: number) => void,
-  formatMag: (mag: number) => string,
-  formatBar: (mag: number) => string,
+  setLevelUi: (level: number, mag: number, grayness: number, T?: number) => void,
   hud: { mag: HTMLElement | null; bar: HTMLElement | null; lens: HTMLElement | null; links: HTMLAnchorElement[] },
   lensNames: string[],
-  html: HTMLElement,
-): void {
+): JourneyNav {
   const track = root.querySelector<HTMLElement>('[data-track]')!;
   const stage = root.querySelector<HTMLElement>('[data-stage]')!;
   const canvas = root.querySelector<HTMLCanvasElement>('[data-depth]');
@@ -285,7 +298,7 @@ function initZoom(
 
     const mag = Math.exp(lerp(Math.log(cur.mag), Math.log(next.mag), p));
     const level = Math.round(T);
-    setLevelUi(level, mag, grayness);
+    setLevelUi(level, mag, grayness, T);
     if (hud.lens) hud.lens.textContent = lensNames[p > 0.5 ? seg + 1 : seg] ?? '';
 
     drawDepth(T, grayness);
@@ -293,13 +306,17 @@ function initZoom(
 
   measure();
 
+  // the magnification slider drags the scroll position directly; snapping waits until it lets go
+  let scrubbing = false;
+  const nearest = (v: number) => Math.round(v * (N - 1)) / (N - 1);
+
   const trigger = ScrollTrigger.create({
     trigger: track,
     start: 'top top',
     end: 'bottom bottom',
     scrub: 0.6,
     snap: {
-      snapTo: scenes.map((_, i) => i / (N - 1)),
+      snapTo: (v: number) => (scrubbing ? v : nearest(v)),
       duration: { min: 0.25, max: 0.7 },
       delay: 0.12,
       ease: 'power2.inOut',
@@ -332,11 +349,12 @@ function initZoom(
     resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 150);
   });
 
-  const scrollToLevel = (level: number) => {
+  const seek = (T: number, smooth: boolean) => {
     const trackTop = track.getBoundingClientRect().top + scrollY;
     const segPx = (track.offsetHeight - innerHeight) / (N - 1);
-    scrollTo({ top: trackTop + segPx * level, behavior: 'smooth' });
+    scrollTo({ top: trackTop + segPx * clamp(T, 0, N - 1), behavior: smooth ? 'smooth' : 'instant' });
   };
+  const scrollToLevel = (level: number) => seek(level, true);
   hud.links.forEach((a, i) =>
     a.addEventListener('click', (e) => {
       e.preventDefault();
@@ -348,4 +366,12 @@ function initZoom(
       btn.addEventListener('click', () => scrollToLevel(Math.min(i + 1, N - 1))),
     ),
   );
+
+  return {
+    live: true,
+    seek,
+    setScrubbing(on) {
+      scrubbing = on;
+    },
+  };
 }

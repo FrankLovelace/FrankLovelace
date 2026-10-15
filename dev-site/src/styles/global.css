@@ -250,9 +250,88 @@ html[data-zone='gray'] .mode-dot {
   user-select: none;
   pointer-events: none;
 }
-.hud__mag {
-  color: var(--chrome-ink);
+.hud__scale {
+  display: grid;
+  gap: 6px;
+}
+
+/* magnification slider — FilmCraft-style: spectrum line, ring knob, hot value */
+.mag-slider {
+  --track-w: 150px;
+  display: grid;
+  grid-template-columns: auto var(--track-w) minmax(6ch, auto);
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+.mag-slider__track {
+  --pos: 0;
+  --sem: 0.5; /* first electron-optical level, set from JS */
+  position: relative;
+  height: 22px;
+  touch-action: none;
+  outline: none;
+  border-radius: 4px;
+}
+/* the line carries color up to the SEM tick and turns gray past it */
+.mag-slider__track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  translate: 0 -50%;
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    color-mix(in oklab, var(--accent), var(--gray-ink-2) 55%) calc(var(--sem) * 100%),
+    var(--gray-ink-2) calc(var(--sem) * 100%)
+  );
+}
+.mag-slider__track:focus-visible {
+  outline: 1.5px solid var(--chrome-accent);
+  outline-offset: 3px;
+}
+.mag-slider__tick {
+  position: absolute;
+  left: calc(var(--at) * 100%);
+  top: 50%;
+  width: 1px;
+  height: 7px;
+  translate: -50% -50%;
+  background: var(--chrome-ink-2);
+  opacity: 0.55;
+}
+.mag-slider__knob {
+  position: absolute;
+  left: calc(var(--pos) * 100%);
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  translate: -50% -50%;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--chrome-bg);
+  border: 1.5px solid var(--chrome-ink-2);
+  transition: border-color 0.15s, scale 0.15s;
+}
+.mag-slider__track:hover .mag-slider__knob {
+  border-color: var(--chrome-ink);
+}
+.mag-slider.is-scrubbing .mag-slider__knob,
+.mag-slider__track:focus-visible .mag-slider__knob {
+  border-color: var(--chrome-accent);
+  scale: 1.15;
+}
+.mag-slider__value {
+  color: var(--chrome-accent);
   font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline dotted 1px;
+  text-underline-offset: 3px;
+  cursor: ew-resize;
+  touch-action: none;
 }
 .hud__bar {
   width: 130px;
@@ -1018,6 +1097,10 @@ html[data-journey='static'] .hud__lens {
   }
   .scene {
     padding-inline: 20px;
+  }
+  .mag-slider {
+    --track-w: 110px;
+    gap: 10px;
   }
   .hud {
     bottom: 14px;

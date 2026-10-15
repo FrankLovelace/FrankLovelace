@@ -7,13 +7,33 @@ interface Props {
 const { locale } = Astro.props;
 const dict = t(locale);
 const levels = dict.nav.levels;
+const last = levels.length - 1;
 ---
 
-<div class="hud" aria-hidden="true">
-  <div class="hud__mag">{dict.hud.magnification} <span data-mag-readout>1×</span></div>
-  <div class="hud__bar"></div>
-  <div data-bar-label>10 cm</div>
-  <div class="hud__lens" data-lens-label>{levels[0]}</div>
+<div class="hud">
+  <div class="mag-slider" data-mag-slider data-interactive>
+    <span class="mag-slider__label" aria-hidden="true">{dict.hud.magnification}</span>
+    <div
+      class="mag-slider__track"
+      data-mag-track
+      role="slider"
+      tabindex="0"
+      aria-label={dict.hud.sliderLabel}
+      aria-valuemin="0"
+      aria-valuemax={last}
+      aria-valuenow="0"
+      aria-valuetext={`1× · ${levels[0]}`}
+    >
+      {levels.map((_, i) => <span class="mag-slider__tick" style={`--at: ${i / last}`} aria-hidden="true" />)}
+      <span class="mag-slider__knob" aria-hidden="true"></span>
+    </div>
+    <span class="mag-slider__value" data-mag-readout title={dict.hud.scrubHint} aria-hidden="true">1×</span>
+  </div>
+  <div class="hud__scale" aria-hidden="true">
+    <div class="hud__bar"></div>
+    <div data-bar-label>10 cm</div>
+  </div>
+  <div class="hud__lens" data-lens-label aria-hidden="true">{levels[0]}</div>
 </div>
 
 <nav aria-label="Levels">
