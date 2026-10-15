@@ -2,6 +2,7 @@ import { initMode } from './theme';
 import { initCursor } from './cursor';
 import { initChips, initCifSlots, autoLoadCifs, setCifsSpinning } from './interactions';
 import { initJourney } from './zoom-journey';
+import { initRuler } from './ruler';
 import type { LatticeHandle } from './crystal-scene';
 
 initMode();
@@ -20,7 +21,7 @@ let currentLevel = 0;
 const cifsNearby = (level: number) => level >= 1 && level <= 3;
 const latticeNearby = (level: number) => level >= 3;
 
-initJourney({
+const journey = initJourney({
   onLevel(level) {
     currentLevel = level;
     if (langLink) langLink.hash = level > 0 ? `#level-${level}` : '';
@@ -41,3 +42,5 @@ initJourney({
     lattice?.setActive(latticeNearby(level));
   },
 });
+
+initRuler(journey);

@@ -36,6 +36,8 @@ const other = altLocale(locale);
         const fine = matchMedia('(min-width: 900px)').matches;
         const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
         document.documentElement.dataset.journey = fine && !calm ? 'zoom' : 'static';
+        const pointer = matchMedia('(pointer: fine) and (hover: hover) and (min-width: 1024px)').matches;
+        if (pointer && !calm) document.documentElement.dataset.ruler = 'on';
       })();
     </script>
   </head>

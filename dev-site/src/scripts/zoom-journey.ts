@@ -1,7 +1,6 @@
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { initMagSlider, type MagSlider, type JourneyNav } from './mag-slider';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,17 +24,25 @@ interface SceneInfo {
   r0: number;
 }
 
+/** What the scroll ruler needs from the journey. */
+export interface JourneyNav {
+  /** Document scroll position (px) at which each level sits. */
+  anchors(): number[];
+  /** Hold off scroll snapping while the page is dragged from the ruler. */
+  setScrubbing(on: boolean): void;
+}
+
 interface JourneyOptions {
   onLevel?: (level: number) => void;
 }
 
-export function initJourney(opts: JourneyOptions = {}): void {
+export function initJourney(opts: JourneyOptions = {}): JourneyNav | null {
   const html = document.documentElement;
   const root = document.querySelector<HTMLElement>('[data-journey-root]');
-  if (!root) return;
+  if (!root) return null;
 
   const sceneEls = [...root.querySelectorAll<HTMLElement>('[data-scene]')];
-  if (sceneEls.length < 2) return;
+  if (sceneEls.length < 2) return null;
 
   const hud = {
     mag: document.querySelector<HTMLElement>('[data-mag-readout]'),
@@ -64,9 +71,8 @@ export function initJourney(opts: JourneyOptions = {}): void {
     return `${Number(value.toPrecision(2))} ${unit}`;
   };
 
-  let slider: MagSlider | null = null;
   let lastLevel = -1;
-  const setLevelUi = (level: number, mag: number, grayness: number, T: number = level) => {
+  const setLevelUi = (level: number, mag: number, grayness: number) => {
     if (hud.mag) hud.mag.textContent = formatMag(mag);
     if (hud.bar) hud.bar.textContent = formatBar(mag);
     if (hud.lens) hud.lens.textContent = lensNames[level] ?? '';
@@ -75,22 +81,15 @@ export function initJourney(opts: JourneyOptions = {}): void {
     hud.links.forEach((a, i) =>
       i === level ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'),
     );
-    slider?.update(T, `${formatMag(mag)} · ${lensNames[level] ?? ''}`);
     if (level !== lastLevel) {
       lastLevel = level;
       opts.onLevel?.(level);
     }
   };
 
-  const nav =
-    html.dataset.journey === 'zoom'
-      ? initZoom(root, sceneEls, setLevelUi, hud, lensNames)
-      : initStatic(sceneEls, setLevelUi);
-  slider = initMagSlider(
-    sceneEls.length,
-    sceneEls.findIndex((el) => el.dataset.zone === 'gray'),
-    nav,
-  );
+  return html.dataset.journey === 'zoom'
+    ? initZoom(root, sceneEls, setLevelUi, hud, lensNames)
+    : initStatic(sceneEls, setLevelUi);
 }
 
 function initStatic(
@@ -112,20 +111,16 @@ function initStatic(
   );
   sceneEls.forEach((el) => io.observe(el));
 
-  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   return {
-    live: false,
-    seek(T, smooth) {
-      const el = sceneEls[clamp(Math.round(T), 0, sceneEls.length - 1)];
-      el.scrollIntoView({ behavior: smooth && !calm ? 'smooth' : 'auto', block: 'start' });
-    },
+    anchors: () => sceneEls.map((el) => el.getBoundingClientRect().top + scrollY),
+    setScrubbing() {},
   };
 }
 
 function initZoom(
   root: HTMLElement,
   sceneEls: HTMLElement[],
-  setLevelUi: (level: number, mag: number, grayness: number, T?: number) => void,
+  setLevelUi: (level: number, mag: number, grayness: number) => void,
   hud: { mag: HTMLElement | null; bar: HTMLElement | null; lens: HTMLElement | null; links: HTMLAnchorElement[] },
   lensNames: string[],
 ): JourneyNav {
@@ -298,7 +293,7 @@ function initZoom(
 
     const mag = Math.exp(lerp(Math.log(cur.mag), Math.log(next.mag), p));
     const level = Math.round(T);
-    setLevelUi(level, mag, grayness, T);
+    setLevelUi(level, mag, grayness);
     if (hud.lens) hud.lens.textContent = lensNames[p > 0.5 ? seg + 1 : seg] ?? '';
 
     drawDepth(T, grayness);
@@ -306,7 +301,7 @@ function initZoom(
 
   measure();
 
-  // the magnification slider drags the scroll position directly; snapping waits until it lets go
+  // the scroll ruler drags the page directly; snapping waits until it lets go
   let scrubbing = false;
   const nearest = (v: number) => Math.round(v * (N - 1)) / (N - 1);
 
@@ -349,12 +344,12 @@ function initZoom(
     resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 150);
   });
 
-  const seek = (T: number, smooth: boolean) => {
+  const levelTop = (level: number) => {
     const trackTop = track.getBoundingClientRect().top + scrollY;
     const segPx = (track.offsetHeight - innerHeight) / (N - 1);
-    scrollTo({ top: trackTop + segPx * clamp(T, 0, N - 1), behavior: smooth ? 'smooth' : 'instant' });
+    return trackTop + segPx * level;
   };
-  const scrollToLevel = (level: number) => seek(level, true);
+  const scrollToLevel = (level: number) => scrollTo({ top: levelTop(level), behavior: 'smooth' });
   hud.links.forEach((a, i) =>
     a.addEventListener('click', (e) => {
       e.preventDefault();
@@ -368,8 +363,7 @@ function initZoom(
   );
 
   return {
-    live: true,
-    seek,
+    anchors: () => scenes.map((_, i) => levelTop(i)),
     setScrubbing(on) {
       scrubbing = on;
     },

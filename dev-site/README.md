@@ -53,10 +53,12 @@ so atoms appear everywhere they belong (a corner atom shows at all 8 corners):
   (`.focal__ring`). The next scene renders live behind it, clipped to a circle locked
   to the same point, while GSAP scrubs the current scene up to 22× scale. The depth-field
   canvas recycles dust particles across scales so motion never breaks.
-- `src/scripts/mag-slider.ts` — the HUD's magnification slider, modeled on FilmCraft's
-  Lumetri sliders: drag or click the track to scrub the journey, drag the value sideways
-  (hot text) to scrub it finely, double-click the value to return to 1×, arrow keys step
-  one level. The track's color ends at the SEM tick. Snapping pauses while it is held.
+- `src/scripts/ruler.ts` — scroll ruler on the right edge, after getartcraft.com: ticks
+  at document scale (one per 1 % of the page) scroll 1:1 while the needle travels down the
+  rail; hovering it zooms out to a map of the whole page and the level names fly from the
+  rail to horizontal labels. Click or drag to move; it settles on the nearest level. Desktop
+  with a fine pointer only (`data-ruler="on"`, set in `Base.astro`); otherwise the dot
+  navigation stays.
 - Mobile (<900px), `prefers-reduced-motion`, and no-JS all get a fully readable
   stacked layout (`data-journey="static"`), with reveal-on-scroll only.
 - The pro/pop color toggle (`data-mode`) deliberately stops mattering below the

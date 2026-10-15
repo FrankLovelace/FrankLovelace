@@ -7,6 +7,7 @@ interface Props {
 const { locale } = Astro.props;
 const dict = t(locale);
 const levels = dict.nav.levels;
+const digits = '0123456789'.split('');
 const last = levels.length - 1;
 ---
 
@@ -50,3 +51,33 @@ const last = levels.length - 1;
     }
   </ul>
 </nav>
+
+<!-- scroll ruler (after getartcraft.com): built by src/scripts/ruler.ts, only with a fine pointer -->
+<div
+  class="ruler"
+  data-ruler-rail
+  role="scrollbar"
+  aria-controls="main"
+  aria-orientation="vertical"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-valuenow="0"
+  aria-label={dict.ruler.label}
+  data-jump-label={dict.ruler.jump}
+  data-interactive
+  hidden
+>
+  <div class="ruler__frost" aria-hidden="true"></div>
+  <div class="ruler__ticks" data-ruler-ticks aria-hidden="true"></div>
+  <div class="ruler__bracket" data-ruler-bracket aria-hidden="true"></div>
+  <div class="ruler__needle" data-ruler-needle aria-hidden="true">
+    <span class="ruler__needle-line"></span>
+    <span class="ruler__readout" data-ruler-readout>
+      <span class="ruler-digits">
+        {[0, 1, 2].map(() => <span class="ruler-digit-col">{digits.map((d) => <span>{d}</span>)}</span>)}
+      </span><span class="ruler__pct">%</span>
+    </span>
+  </div>
+  <div class="ruler__ghost" data-ruler-ghost aria-hidden="true"></div>
+</div>
+<div class="ruler-words" data-ruler-words hidden></div>

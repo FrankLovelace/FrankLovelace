@@ -14,8 +14,10 @@ const es: Dictionary = {
     magnification: 'AUM',
     mode: 'MODO',
     detector: 'DET',
-    sliderLabel: 'Aumento',
-    scrubHint: 'Arrastra en horizontal para cambiar el aumento · doble clic para volver a 1×',
+  },
+  ruler: {
+    label: 'Posición en la página',
+    jump: 'Ir a',
   },
   chrome: {
     modeToggle: 'Cambiar modo de color',

@@ -12,8 +12,10 @@ export default {
     magnification: 'MAG',
     mode: 'MODE',
     detector: 'DET',
-    sliderLabel: 'Magnification',
-    scrubHint: 'Drag sideways to change magnification · double-click to return to 1×',
+  },
+  ruler: {
+    label: 'Page position',
+    jump: 'Jump to',
   },
   chrome: {
     modeToggle: 'Toggle color mode',
