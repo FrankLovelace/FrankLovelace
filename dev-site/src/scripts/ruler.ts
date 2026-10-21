@@ -284,11 +284,25 @@ export function initRuler(nav: JourneyNav | null): void {
     return clamp01((clientY - base) / span);
   };
 
-  rail.addEventListener('pointerenter', () => setZoomIntent(true));
-  rail.addEventListener('pointerleave', () => {
-    st.ghostActive = false;
-    if (!st.dragging) setZoomIntent(false);
+  // Hover is decided by pointer position, not by which element is under it: the level names sit
+  // above the rail and fly across it, so enter/leave events would toggle the zoom every time a
+  // word passed under a still pointer (and the zoom itself moves the words, so it looped).
+  // Once zoomed, the hot zone widens to cover the map labels beside the rail.
+  const hotZone = { on: false };
+  const mapReach = () =>
+    C.railW + C.textPad + 16 + Math.max(0, ...words.map((w) => (w.m ? w.m.total * C.mapPx : 0)));
+  const setHot = (on: boolean) => {
+    if (on === hotZone.on) return;
+    hotZone.on = on;
+    if (!st.dragging) setZoomIntent(on);
+  };
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    const wide = hotZone.on && e.clientY >= navH;
+    setHot(e.clientX >= geom.vw - (wide ? mapReach() : C.railW));
   });
+  html.addEventListener('pointerleave', () => setHot(false));
+  rail.addEventListener('pointerleave', () => (st.ghostActive = false));
   rail.addEventListener('pointermove', (e) => {
     const { base, span } = travel();
     st.ghostActive = true;
@@ -310,12 +324,8 @@ export function initRuler(nav: JourneyNav | null): void {
   const release = (e: PointerEvent) => {
     if (!st.dragging) return;
     st.dragging = false;
-    const r = rail.getBoundingClientRect();
-    const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-    if (!inside) {
-      st.ghostActive = false;
-      setZoomIntent(false);
-    }
+    if (e.clientX < geom.vw - C.railW) st.ghostActive = false;
+    setZoomIntent(hotZone.on);
   };
   rail.addEventListener('pointerup', release);
   rail.addEventListener('pointercancel', release);
@@ -497,7 +507,10 @@ export function initRuler(nav: JourneyNav | null): void {
         h.top = `${y0 - 2}px`;
         h.width = `${x1 - x0 + 4}px`;
         h.height = `${y1 - y0 + 4}px`;
-        h.pointerEvents = maxA > 0.05 ? 'auto' : 'none';
+        // only clickable while the word is at rest: mid-flight its box spans the whole path and
+        // would swallow clicks meant for the rail or the page
+        const settled = (flip <= 0 || flip >= 1) && (Z === 0 || Z === 1);
+        h.pointerEvents = settled && maxA > 0.05 ? 'auto' : 'none';
       }
     });
 
