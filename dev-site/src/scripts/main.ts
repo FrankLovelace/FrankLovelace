@@ -17,9 +17,10 @@ let latticeRequested = false;
 let lattice: LatticeHandle | null = null;
 let currentLevel = 0;
 
-// scene indexes: 0 hero · 1 about · 2 projects (CIF viewers) · 3 videos · 4 atomic end (lattice)
-const cifsNearby = (level: number) => level >= 1 && level <= 3;
-const latticeNearby = (level: number) => level >= 3;
+// scene indexes: 0 hero · 1 about · 2 projects (CIF viewers) · [3 videos, when enabled] · last: atomic end (lattice)
+const latticeLevel = [...document.querySelectorAll('[data-scene]')].findIndex((el) => el.querySelector('[data-lattice]'));
+const cifsNearby = (level: number) => level >= 1 && level < latticeLevel;
+const latticeNearby = (level: number) => level >= latticeLevel - 1;
 
 const journey = initJourney({
   onLevel(level) {

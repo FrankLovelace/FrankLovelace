@@ -1,4 +1,9 @@
 ---
+// Currently not rendered (commented out in Journey.astro). To bring it back:
+//   1. fill src/data/videos.ts with the real links and durations
+//   2. uncomment the import and <Videos /> in Journey.astro
+//   3. put 'TEM' back into nav.levels in src/i18n/en.ts and es.ts
+//   4. renumber AtomicEnd.astro to level-4 (id and data-level)
 import VideoCard from '../VideoCard.astro';
 import { videos } from '../../data/videos';
 import { t, type Locale } from '../../i18n';

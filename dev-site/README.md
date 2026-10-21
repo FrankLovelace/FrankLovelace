@@ -1,7 +1,7 @@
 # Frank Lovelace — microscope journey portfolio
 
-A continuous-zoom portfolio: scrolling racks up magnification through five levels
-(naked eye → optical → SEM → TEM → diffraction). Past the SEM line everything goes
+A continuous-zoom portfolio: scrolling racks up magnification through four levels
+(naked eye → optical → SEM → diffraction). Past the SEM line everything goes
 grayscale — electrons carry no color.
 
 **Stack:** Astro 6 · TypeScript · GSAP ScrollTrigger · Three.js · 3Dmol.js · vanilla CSS.
@@ -13,16 +13,22 @@ npm run build     # static output in dist/ (deploy with your own pipeline)
 npm run preview
 ```
 
-## Where to put your real content (all marked `TODO`)
+## Content
 
 | File | What |
 | --- | --- |
 | `src/data/projects.ts` | Projects: titles, EN/ES descriptions, GitHub/demo URLs, optional CIF per card |
-| `src/data/videos.ts` | Instagram/TikTok video links + titles |
+| `src/data/videos.ts` | Instagram/TikTok video links + titles (scene currently disabled, see below) |
 | `src/data/publications.ts` | Papers (status: `in-progress` / `preprint` / `published`, DOI/arXiv links) |
 | `src/data/links.ts` | GitHub / LinkedIn / Instagram + art & personal site URLs |
 | `public/structures/*.cif` | Crystal structures rendered by the 3D viewers (see below) |
 | `src/i18n/en.ts`, `es.ts` | Every UI string, bio paragraphs, the hero quote |
+
+### Recordings (TEM) scene
+
+The videos scene is written but not rendered yet. To enable it, fill `src/data/videos.ts`,
+uncomment `<Videos />` in `src/components/Journey.astro`, add `'TEM'` back to
+`nav.levels` in both dictionaries, and renumber `AtomicEnd.astro` to `level-4`.
 
 ## Adding a language (3 steps)
 

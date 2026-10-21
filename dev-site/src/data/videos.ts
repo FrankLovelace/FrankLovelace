@@ -8,6 +8,7 @@ export interface Video {
   timecode: string;
 }
 
+// Draft list: the Recordings scene is not rendered until these are real (see scenes/Videos.astro).
 export const videos: Video[] = [
   {
     id: 'rec-001',

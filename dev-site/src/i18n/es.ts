@@ -7,7 +7,8 @@ const es: Dictionary = {
       'Frank Lovelace: cristalografía, nanomateriales y software científico, ordenados como una serie de aumentos desde 1× hasta la difracción de electrones.',
   },
   nav: {
-    levels: ['Ojo desnudo', 'Óptico', 'SEM', 'TEM', 'Difracción'],
+    // añadir 'TEM' después de 'SEM' cuando se reactive la escena de Grabaciones
+    levels: ['Ojo desnudo', 'Óptico', 'SEM', 'Difracción'],
     skip: 'Saltar al contenido',
   },
   hud: {
@@ -57,7 +58,7 @@ const es: Dictionary = {
   videos: {
     lensTag: 'TEM in situ · ~500.000×',
     title: 'Grabaciones',
-    subtitle: 'Vídeos cortos sobre temas de nanociencia. Esta sección sigue en desarrollo; las publicaciones recientes están en Instagram.',
+    subtitle: 'Vídeos cortos sobre temas de nanociencia.',
     watchOn: 'ver en',
     rec: 'REC',
     focalLabel: 'resolución atómica',

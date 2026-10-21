@@ -5,7 +5,8 @@ export default {
       'Frank Lovelace: crystallography, nanomaterials and scientific software, arranged as a magnification series from 1× to electron diffraction.',
   },
   nav: {
-    levels: ['Naked eye', 'Optical', 'SEM', 'TEM', 'Diffraction'],
+    // add 'TEM' after 'SEM' when the Recordings scene is re-enabled
+    levels: ['Naked eye', 'Optical', 'SEM', 'Diffraction'],
     skip: 'Skip to content',
   },
   hud: {
@@ -38,7 +39,7 @@ export default {
     p1: 'I started as a software developer, building systems end to end: interfaces, servers, data pipelines and deployment. I now apply that background to nanotechnology and scientific computing.',
     p2: 'My main area is crystallography: how atoms are arranged in solids, how that order is recorded in diffraction data, and the software used to recover it. I am writing my first paper, a review on fullerenes, and I am open to work in other areas of nanoscience.',
     p3: 'The site is laid out as a magnification series. Each section corresponds to an imaging regime, from the naked eye down to electron diffraction.',
-    focalLabel: '',
+    focalLabel: 'move closer to the specimen',
   },
   projects: {
     lensTag: 'scanning electron microscope · ~50,000×',
@@ -55,7 +56,7 @@ export default {
   videos: {
     lensTag: 'in-situ TEM · ~500,000×',
     title: 'Recordings',
-    subtitle: 'Short videos on nanoscience topics. This section is still in progress; recent uploads are on Instagram.',
+    subtitle: 'Short videos on nanoscience topics.',
     watchOn: 'watch on',
     rec: 'REC',
     focalLabel: 'atomic resolution',
