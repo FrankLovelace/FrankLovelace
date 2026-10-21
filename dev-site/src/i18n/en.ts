@@ -2,7 +2,7 @@ export default {
   meta: {
     title: 'Frank Lovelace — Nanotechnology & Scientific Computing',
     description:
-      'Frank Lovelace: crystallography, nanomaterials and scientific software, arranged as a magnification series from 1× to electron diffraction.',
+      'Portfolio of Frank Lovelace: crystallography, nanomaterials and scientific software, presented as a journey from 1× to electron diffraction.',
   },
   nav: {
     // add 'TEM' after 'SEM' when the Recordings scene is re-enabled
@@ -29,37 +29,38 @@ export default {
     name: 'Frank Lovelace',
     role: 'software development → nanotechnology & scientific computing',
     quote:
-      'We are shaped by our material conditions and social context, the rest is luck and a pinch of sugar.',
+      'We are shaped by our material conditions and social context; the rest is luck and a pinch of sugar.',
     scrollHint: 'scroll to increase magnification',
-    focalLabel: 'specimen',
+    focalLabel: 'about me',
   },
   about: {
     lensTag: 'optical microscope · ~400×',
     title: 'About me',
-    p1: 'I started as a software developer, building systems end to end: interfaces, servers, data pipelines and deployment. I now apply that background to nanotechnology and scientific computing.',
-    p2: 'My main area is crystallography: how atoms are arranged in solids, how that order is recorded in diffraction data, and the software used to recover it. I am writing my first paper, a review on fullerenes, and I am open to work in other areas of nanoscience.',
-    p3: 'The site is laid out as a magnification series. Each section corresponds to an imaging regime, from the naked eye down to electron diffraction.',
-    focalLabel: 'move closer to the specimen',
+    p1: 'I come from software development, where I built complete systems, from the interface to the server, data pipelines and deployment. Today I bring that experience to nanotechnology and scientific computing.',
+    p2: 'My focus is crystallography, especially the software that turns diffraction data back into atomic structures. I am currently writing my first paper, a review on fullerenes, and I am interested in contributing to other areas of nanoscience.',
+    p3: 'This site works like a microscope: each section is a step up in magnification, from the naked eye down to electron diffraction.',
+    focalLabel: 'projects',
   },
   projects: {
     lensTag: 'scanning electron microscope · ~50,000×',
     title: 'Projects',
-    subtitle: 'Electron images carry no color information, so from this point on the page is grayscale.',
+    subtitle: 'Electron imaging carries no color information, so from here on the page is in grayscale.',
     filterAll: 'all',
     filterNano: 'nano',
     filterDev: 'dev',
     code: 'code',
-    demo: 'live',
+    demo: 'live demo',
     structure: 'structure',
-    focalLabel: 'increase magnification',
+    // next scene; set to 'recordings' when the Recordings scene is re-enabled
+    focalLabel: 'publications',
   },
   videos: {
     lensTag: 'in-situ TEM · ~500,000×',
     title: 'Recordings',
-    subtitle: 'Short videos on nanoscience topics.',
+    subtitle: 'Short videos explaining topics in nanoscience.',
     watchOn: 'watch on',
     rec: 'REC',
-    focalLabel: 'atomic resolution',
+    focalLabel: 'publications',
   },
   pubs: {
     lensTag: 'electron diffraction · ~10,000,000×',
@@ -74,14 +75,14 @@ export default {
     title: 'Other work',
     blurb: 'Writing and personal projects outside science.',
     artTitle: 'Art',
-    artDesc: 'Publications related to my book',
+    artDesc: 'Characters, lore and art from the world of my book.',
     personalTitle: 'Personal',
-    personalDesc: 'Personal blog',
+    personalDesc: 'Personal blog.',
     visit: 'visit',
   },
   contact: {
     title: 'Contact',
-    blurb: 'There is no contact form. Messages on any of these profiles reach me directly.',
+    blurb: 'You can reach me directly through any of these profiles.',
   },
   footer: {
     line: 'Built with Astro, GSAP, Three.js and 3Dmol.js.',

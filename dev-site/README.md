@@ -28,7 +28,8 @@ npm run preview
 
 The videos scene is written but not rendered yet. To enable it, fill `src/data/videos.ts`,
 uncomment `<Videos />` in `src/components/Journey.astro`, add `'TEM'` back to
-`nav.levels` in both dictionaries, and renumber `AtomicEnd.astro` to `level-4`.
+`nav.levels` in both dictionaries, renumber `AtomicEnd.astro` to `level-4`, and point `projects.focalLabel` at the
+recordings in both dictionaries.
 
 ## Adding a language (3 steps)
 

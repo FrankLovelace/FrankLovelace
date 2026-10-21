@@ -20,8 +20,8 @@ export const publications: Publication[] = [
       es: 'Una revisión sobre fullerenos',
     },
     blurb: {
-      en: 'Review of the structure and crystallography of fullerenes. First paper; manuscript in preparation.',
-      es: 'Revisión sobre la estructura y la cristalografía de los fullerenos. Primer artículo; manuscrito en preparación.',
+      en: 'A review of the structure and crystallography of fullerenes. Manuscript in preparation.',
+      es: 'Revisión de la estructura y la cristalografía de los fullerenos. Manuscrito en preparación.',
     },
   },
 ];
